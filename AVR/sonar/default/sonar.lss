@@ -1,0 +1,254 @@
+
+sonar.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000010a  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000002  00800060  00800060  0000017e  2**0
+                  ALLOC
+  2 .stab         000006cc  00000000  00000000  00000180  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000085  00000000  00000000  0000084c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_aranges 00000020  00000000  00000000  000008d1  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_pubnames 0000006b  00000000  00000000  000008f1  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   0000013b  00000000  00000000  0000095c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000000df  00000000  00000000  00000a97  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000001d2  00000000  00000000  00000b76  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000070  00000000  00000000  00000d48  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000000d6  00000000  00000000  00000db8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_pubtypes 0000001e  00000000  00000000  00000e8e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	4b c0       	rjmp	.+150    	; 0x9e <__vector_3>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	a2 36       	cpi	r26, 0x62	; 98
+  3e:	b1 07       	cpc	r27, r17
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	2b d0       	rcall	.+86     	; 0x9a <main>
+  44:	60 c0       	rjmp	.+192    	; 0x106 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <initIO>:
+
+volatile unsigned int time0;
+
+void initIO(void)
+{
+    OUT_DDR = bv(OUT1) | bv(OUT2) | bv(OUT3) | bv(OUT4);
+  48:	80 ef       	ldi	r24, 0xF0	; 240
+  4a:	81 bb       	out	0x11, r24	; 17
+}
+  4c:	08 95       	ret
+
+0000004e <timer2SetPrescaler>:
+}
+*/
+
+void timer2SetPrescaler(unsigned char prescale)
+{
+	outb(TCCR2, (inb(TCCR2) & ~TIMER_PRESCALE_MASK) | prescale);
+  4e:	95 b5       	in	r25, 0x25	; 37
+  50:	98 7f       	andi	r25, 0xF8	; 248
+  52:	98 2b       	or	r25, r24
+  54:	95 bd       	out	0x25, r25	; 37
+}
+  56:	08 95       	ret
+
+00000058 <initOC2>:
+ 
+void initOC2(void)
+{
+	sbi(TIMSK, OCIE2); //Interrupt on compare
+  58:	89 b7       	in	r24, 0x39	; 57
+  5a:	80 68       	ori	r24, 0x80	; 128
+  5c:	89 bf       	out	0x39, r24	; 57
+	//sbi(TIMSK, TOIE0); //Interrupt on overflow
+
+    timer2SetPrescaler(TIMER2_PRESCALER); //start timer2 PWM
+  5e:	81 e0       	ldi	r24, 0x01	; 1
+  60:	f6 df       	rcall	.-20     	; 0x4e <timer2SetPrescaler>
+ 
+//    cbi(TCCR0, WGM00);
+//    cbi(TCCR0, WGM01); //Normal waveform generation mode
+    cbi(TCCR2, WGM20);
+  62:	85 b5       	in	r24, 0x25	; 37
+  64:	8f 7b       	andi	r24, 0xBF	; 191
+  66:	85 bd       	out	0x25, r24	; 37
+    sbi(TCCR2, WGM21); //CTC (clear on compare) mode
+  68:	85 b5       	in	r24, 0x25	; 37
+  6a:	88 60       	ori	r24, 0x08	; 8
+  6c:	85 bd       	out	0x25, r24	; 37
+
+    cbi(TCCR2, COM20);
+  6e:	85 b5       	in	r24, 0x25	; 37
+  70:	8f 7e       	andi	r24, 0xEF	; 239
+  72:	85 bd       	out	0x25, r24	; 37
+    cbi(TCCR2, COM21); //Normal port operation, OC0 disconnected
+  74:	85 b5       	in	r24, 0x25	; 37
+  76:	8f 7d       	andi	r24, 0xDF	; 223
+  78:	85 bd       	out	0x25, r24	; 37
+
+
+	sei();               // Enable interrupts
+  7a:	78 94       	sei
+ 
+    OCR2 = OCR2_VALUE;
+  7c:	83 e6       	ldi	r24, 0x63	; 99
+  7e:	83 bd       	out	0x23, r24	; 35
+}
+  80:	08 95       	ret
+
+00000082 <init>:
+
+volatile unsigned int time0;
+
+void initIO(void)
+{
+    OUT_DDR = bv(OUT1) | bv(OUT2) | bv(OUT3) | bv(OUT4);
+  82:	80 ef       	ldi	r24, 0xF0	; 240
+  84:	81 bb       	out	0x11, r24	; 17
+
+void init(void)
+{
+//        initUSART();
+        initIO();
+        initOC2();
+  86:	e8 df       	rcall	.-48     	; 0x58 <initOC2>
+		sbi(OUT_PORT, OUT3);
+  88:	95 9a       	sbi	0x12, 5	; 18
+		cbi(OUT_PORT, OUT2);
+  8a:	96 98       	cbi	0x12, 6	; 18
+		sbi(OUT_PORT, OUT4);
+  8c:	94 9a       	sbi	0x12, 4	; 18
+		cbi(OUT_PORT, OUT1);
+  8e:	97 98       	cbi	0x12, 7	; 18
+		time0 = 0;
+  90:	10 92 61 00 	sts	0x0061, r1
+  94:	10 92 60 00 	sts	0x0060, r1
+}
+  98:	08 95       	ret
+
+0000009a <main>:
+
+int main(void)
+{
+
+	init();
+  9a:	f3 df       	rcall	.-26     	; 0x82 <init>
+  9c:	ff cf       	rjmp	.-2      	; 0x9c <main+0x2>
+
+0000009e <__vector_3>:
+
+}
+*/
+
+ISR (TIMER2_COMP_vect)
+{
+  9e:	1f 92       	push	r1
+  a0:	0f 92       	push	r0
+  a2:	0f b6       	in	r0, 0x3f	; 63
+  a4:	0f 92       	push	r0
+  a6:	11 24       	eor	r1, r1
+  a8:	2f 93       	push	r18
+  aa:	8f 93       	push	r24
+  ac:	9f 93       	push	r25
+	OUT_PORT ^= bv(OUT4) | bv(OUT1);
+  ae:	82 b3       	in	r24, 0x12	; 18
+  b0:	90 e9       	ldi	r25, 0x90	; 144
+  b2:	89 27       	eor	r24, r25
+  b4:	82 bb       	out	0x12, r24	; 18
+	if (time0<40) {
+  b6:	80 91 60 00 	lds	r24, 0x0060
+  ba:	90 91 61 00 	lds	r25, 0x0061
+  be:	88 32       	cpi	r24, 0x28	; 40
+  c0:	91 05       	cpc	r25, r1
+  c2:	20 f4       	brcc	.+8      	; 0xcc <__vector_3+0x2e>
+		OUT_PORT ^= bv(OUT2) | bv(OUT3);
+  c4:	82 b3       	in	r24, 0x12	; 18
+  c6:	90 e6       	ldi	r25, 0x60	; 96
+  c8:	89 27       	eor	r24, r25
+  ca:	82 bb       	out	0x12, r24	; 18
+	}
+	time0++;
+  cc:	80 91 60 00 	lds	r24, 0x0060
+  d0:	90 91 61 00 	lds	r25, 0x0061
+  d4:	01 96       	adiw	r24, 0x01	; 1
+  d6:	90 93 61 00 	sts	0x0061, r25
+  da:	80 93 60 00 	sts	0x0060, r24
+
+	if (time0>400) {
+  de:	80 91 60 00 	lds	r24, 0x0060
+  e2:	90 91 61 00 	lds	r25, 0x0061
+  e6:	21 e0       	ldi	r18, 0x01	; 1
+  e8:	81 39       	cpi	r24, 0x91	; 145
+  ea:	92 07       	cpc	r25, r18
+  ec:	20 f0       	brcs	.+8      	; 0xf6 <__vector_3+0x58>
+		time0 = 0;
+  ee:	10 92 61 00 	sts	0x0061, r1
+  f2:	10 92 60 00 	sts	0x0060, r1
+	}
+}
+  f6:	9f 91       	pop	r25
+  f8:	8f 91       	pop	r24
+  fa:	2f 91       	pop	r18
+  fc:	0f 90       	pop	r0
+  fe:	0f be       	out	0x3f, r0	; 63
+ 100:	0f 90       	pop	r0
+ 102:	1f 90       	pop	r1
+ 104:	18 95       	reti
+
+00000106 <_exit>:
+ 106:	f8 94       	cli
+
+00000108 <__stop_program>:
+ 108:	ff cf       	rjmp	.-2      	; 0x108 <__stop_program>
