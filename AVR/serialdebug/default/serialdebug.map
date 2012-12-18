@@ -34,6 +34,7 @@ Linker script and memory map
 
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm16.o
 LOAD serialdebug.o
+LOAD usart.o
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5\libc.a
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a
@@ -205,19 +206,20 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x0000008e                __vector_20
  .text          0x00000092      0x38e serialdebug.o
                 0x00000092                initUSART
-                0x000000b4                putchr
-                0x000000fc                chrready
-                0x0000010e                getchr
-                0x00000144                printstr
-                0x0000016c                chartohex
-                0x0000017a                hextochar
-                0x00000196                printhex
-                0x000001c6                clearcmdbuf
-                0x000001dc                executecmd
-                0x00000302                addtocmd
-                0x00000354                main
-                0x00000390                __vector_11
-                0x000003ce                __vector_13
+                0x000000b4                __vector_11
+                0x000000f2                __vector_13
+                0x00000144                putchr
+                0x0000018c                chrready
+                0x0000019e                getchr
+                0x000001d4                printstr
+                0x000001fc                chartohex
+                0x0000020a                hextochar
+                0x00000226                printhex
+                0x00000256                clearcmdbuf
+                0x0000026c                executecmd
+                0x00000392                addtocmd
+                0x000003e4                main
+ .text          0x00000420        0x0 usart.o
  .text          0x00000420        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
  .text          0x00000420        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
  .text          0x00000420        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
@@ -258,6 +260,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  *(.data)
  .data          0x00800060        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm16.o
  .data          0x00800060       0x15 serialdebug.o
+ .data          0x00800075        0x0 usart.o
  .data          0x00800075        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
  .data          0x00800075        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
  .data          0x00800075        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
@@ -275,6 +278,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  *(.bss)
  .bss           0x00800076        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr5/crtm16.o
  .bss           0x00800076        0x0 serialdebug.o
+ .bss           0x00800076        0x0 usart.o
  .bss           0x00800076        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_exit.o)
  .bss           0x00800076        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_copy_data.o)
  .bss           0x00800076        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr5\libgcc.a(_clear_bss.o)
@@ -362,27 +366,30 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  .debug_pubnames
                 0x00000000      0x14a serialdebug.o
 
-.debug_info     0x00000000      0x41d
+.debug_info     0x00000000      0x418
  *(.debug_info)
- .debug_info    0x00000000      0x41d serialdebug.o
+ .debug_info    0x00000000      0x418 serialdebug.o
+ .debug_info    0x00000418        0x0 usart.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x189
+.debug_abbrev   0x00000000      0x136
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x189 serialdebug.o
+ .debug_abbrev  0x00000000      0x135 serialdebug.o
+ .debug_abbrev  0x00000135        0x1 usart.o
 
-.debug_line     0x00000000      0x5d0
+.debug_line     0x00000000      0x604
  *(.debug_line)
- .debug_line    0x00000000      0x5d0 serialdebug.o
+ .debug_line    0x00000000      0x5e0 serialdebug.o
+ .debug_line    0x000005e0       0x24 usart.o
 
 .debug_frame    0x00000000       0xf0
  *(.debug_frame)
  .debug_frame   0x00000000       0xf0 serialdebug.o
 
-.debug_str      0x00000000      0x183
+.debug_str      0x00000000      0x17e
  *(.debug_str)
- .debug_str     0x00000000      0x183 serialdebug.o
-                                0x1bc (size before relaxing)
+ .debug_str     0x00000000      0x17e serialdebug.o
+                                0x1b7 (size before relaxing)
 
 .debug_loc      0x00000000      0x352
  *(.debug_loc)

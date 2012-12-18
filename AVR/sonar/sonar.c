@@ -1,87 +1,85 @@
+#define F_CPU 14745000L
+#define F_TARGET 40000
+#define BAUDRATE 19200L
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "macro.h"
+#include "usart.h"
+#include "timers.h"
+//#define F_INT 10
 
-#define F_CPU 8000000L
-#define F_TARGET 40000
-#define F_INT 10
+#define US_ON 5
+#define US_OP 6
+//#define OUT3 5
+//#define OUT4 4
+#define US_OPORT PORTD
+#define US_ODDR DDRD
 
-#define OUT1 7
-#define OUT2 6
-#define OUT3 5
-#define OUT4 4
-#define OUT_PORT PORTD
-#define OUT_DDR DDRD
+#define US_I 0
+#define US_IPORT PORTA
+#define US_IDDR DDRA
+#define US_IPIN PINA
 
-#define bv(bit) (1<<(bit))
-#define cbi(reg,bit) reg &= ~(bv(bit))
-#define sbi(reg,bit) reg |= (bv(bit))
-#define ibi(reg,bit) reg ^= (bv(bit))
-#define outb(addr, data) addr = (data)
-#define inb(addr) (addr)
-
-#define TIMER_CLK_DIV1              0x01        ///< Timer clocked at F_CPU
-#define TIMER_CLK_DIV8              0x02        ///< Timer clocked at F_CPU/8
-#define TIMER_CLK_DIV64             0x03        ///< Timer clocked at F_CPU/64
-#define TIMER_PRESCALE_MASK         0x07        ///< Timer Prescaler Bit-Mask
- 
-#define TIMER2_PRESCALER TIMER_CLK_DIV1
-#define TIMER2_PRESCALER_VALUE (1<<(3*(TIMER2_PRESCALER-1)))
-
-#define OCR2_VALUE (((F_CPU / TIMER2_PRESCALER_VALUE) / F_TARGET) / 2 - 1)
+#define IMPULSES 23
+#define TIME_HL 0
+#define TIME_EM (TIME_HL + IMPULSES*2) //emit time in half/periods
+#define TIME_RL (TIME_EM + 10) //relax time
+#define TIME_LS (TIME_RL + 4700) //listen time
 
 volatile unsigned int time0;
-
+char umode = 1; //0 - off, 1 - emit, 3 - recieve
+char uinlast = 0;
+unsigned int impcount = 0;
+ 
+unsigned int timest = 0; //time when signal appear
+unsigned int timeen = 0; //time when signal disappear
 void initIO(void)
 {
-    OUT_DDR = bv(OUT1) | bv(OUT2) | bv(OUT3) | bv(OUT4);
+    US_ODDR |= bv(US_ON) | bv(US_OP);
+	US_IDDR &= ~(bv(US_I));
 }
  
-/*
-void initUSART(void)
+
+
+void setumode(int m)
 {
-        UBRRL = LO(bauddivider);
-        UBRRH = HI(bauddivider);
-        UCSRA = 0;
-        UCSRB = 1<<RXEN|1<<TXEN|1<<RXCIE|0<<TXCIE;
-        UCSRC = 1<<URSEL|1<<UCSZ0|1<<UCSZ1;
+	if (umode != m) {
+		cli();
+		switch (m) {
+			case 0: {
+				US_ODDR &= ~(bv(US_OP) | bv(US_ON));
+				break;
+			}
+			case 1: { //emit
+			    US_ODDR |= bv(US_ON) | bv(US_OP);
+				break;
+			}
+			case 2: {
+				US_ODDR &= ~(bv(US_OP) | bv(US_ON));
+				break;
+			}
+			case 3: { //listen
+				US_ODDR &= ~(bv(US_OP) | bv(US_ON));
+				uinlast = (US_IPIN & (bv(US_I))) != 0;
+				impcount = 0;
+				timest = 0;
+				timeen = 0;
+				break;
+			}
+		}
+		umode = m;
+		sei();
+	}
 }
-*/
 
-void timer2SetPrescaler(unsigned char prescale)
-{
-	outb(TCCR2, (inb(TCCR2) & ~TIMER_PRESCALE_MASK) | prescale);
-}
- 
-void initOC2(void)
-{
-	sbi(TIMSK, OCIE2); //Interrupt on compare
-	//sbi(TIMSK, TOIE0); //Interrupt on overflow
-
-    timer2SetPrescaler(TIMER2_PRESCALER); //start timer2 PWM
- 
-//    cbi(TCCR0, WGM00);
-//    cbi(TCCR0, WGM01); //Normal waveform generation mode
-    cbi(TCCR2, WGM20);
-    sbi(TCCR2, WGM21); //CTC (clear on compare) mode
-
-    cbi(TCCR2, COM20);
-    cbi(TCCR2, COM21); //Normal port operation, OC0 disconnected
-
-
-	sei();               // Enable interrupts
- 
-    OCR2 = OCR2_VALUE;
-}
 
 void init(void)
 {
-//        initUSART();
+        initUSART();
         initIO();
         initOC2();
-		sbi(OUT_PORT, OUT3);
-		cbi(OUT_PORT, OUT2);
-		sbi(OUT_PORT, OUT4);
-		cbi(OUT_PORT, OUT1);
+		US_OPORT |= bv(US_OP);
+		US_OPORT &= ~(bv(US_ON));
 		time0 = 0;
 }
 
@@ -95,8 +93,18 @@ int main(void)
 	//	cli();
 	//	ibi(OUT_PORT, OUT1);
 	//	sei();
+		if (time0 > TIME_LS) {
+			setumode(0);
+		} else if (time0 > TIME_RL) {
+			setumode(3);
+		} else if (time0 > TIME_EM) {
+			setumode(2);
+		} else if (time0 > TIME_HL) {
+			setumode(1);
+		}
 	}
 }
+
 
 /*
 ISR (TIMER0_OVF_vect)
@@ -113,13 +121,29 @@ ISR (TIMER0_OVF_vect)
 
 ISR (TIMER2_COMP_vect)
 {
-	OUT_PORT ^= bv(OUT4) | bv(OUT1);
-	if (time0<40) {
-		OUT_PORT ^= bv(OUT2) | bv(OUT3);
+	switch (umode) {
+		case 1: {
+			US_OPORT ^= bv(US_OP) | bv(US_ON);
+			break;
+		}
+		case 3: {
+			char uincur = (US_IPIN & (bv(US_I))) != 0;
+			if (uincur != uinlast) {
+				uinlast = uincur;
+				impcount++;
+			} else {
+				if (impcount<IMPULSES) {
+					impcount = 0; //wrong work
+					timest = time0;
+				} else {
+					umode = 0; //finish listening here
+					timeen = time0;
+				}
+			}
+			break;
+		}
 	}
-	time0++;
 
-	if (time0>400) {
-		time0 = 0;
-	}
+	time0++;
 }
+

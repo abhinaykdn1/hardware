@@ -10,7 +10,8 @@ serialdebug.o: ../serialdebug.c \
  c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/version.h \
  c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/fuse.h \
  c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/lock.h \
- c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/interrupt.h
+ c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/interrupt.h \
+ ../macro.h ../usart.h
 
 c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/io.h:
 
@@ -35,3 +36,7 @@ c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../..
 c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/lock.h:
 
 c:\program\ files\atmel\avr\ tools\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/interrupt.h:
+
+../macro.h:
+
+../usart.h:

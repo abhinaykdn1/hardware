@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = serialdebug.o 
+OBJECTS = serialdebug.o usart.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -47,6 +47,9 @@ all: $(TARGET) serialdebug.hex serialdebug.eep serialdebug.lss size
 
 ## Compile
 serialdebug.o: ../serialdebug.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+usart.o: ../usart.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
