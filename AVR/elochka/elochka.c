@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "macro.h"
 //#include "timers.h"
+#include "sin.h"
 
 #define LED0 4
 #define LED0P PORTD

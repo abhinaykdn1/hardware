@@ -3,33 +3,33 @@ sonar.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000041c  00000000  00000000  00000094  2**1
+  0 .text         00000432  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000002  00800060  0000041c  000004b0  2**0
+  1 .data         00000002  00800060  00000432  000004c6  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          0000004d  00800062  00800062  000004b2  2**0
+  2 .bss          0000004d  00800062  00800062  000004c8  2**0
                   ALLOC
-  3 .stab         000006cc  00000000  00000000  000004b4  2**2
+  3 .stab         000006cc  00000000  00000000  000004c8  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      00000085  00000000  00000000  00000b80  2**0
+  4 .stabstr      00000085  00000000  00000000  00000b94  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_aranges 00000020  00000000  00000000  00000c05  2**0
+  5 .debug_aranges 00000020  00000000  00000000  00000c19  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_pubnames 0000019a  00000000  00000000  00000c25  2**0
+  6 .debug_pubnames 0000019a  00000000  00000000  00000c39  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_info   00000480  00000000  00000000  00000dbf  2**0
+  7 .debug_info   00000480  00000000  00000000  00000dd3  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00000149  00000000  00000000  0000123f  2**0
+  8 .debug_abbrev 00000149  00000000  00000000  00001253  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   0000055e  00000000  00000000  00001388  2**0
+  9 .debug_line   00000586  00000000  00000000  0000139c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00000120  00000000  00000000  000018e8  2**2
+ 10 .debug_frame  00000120  00000000  00000000  00001924  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    000001b0  00000000  00000000  00001a08  2**0
+ 11 .debug_str    000001b5  00000000  00000000  00001a44  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    00000150  00000000  00000000  00001bb8  2**0
+ 12 .debug_loc    00000150  00000000  00000000  00001bf9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_pubtypes 0000001e  00000000  00000000  00001d08  2**0
+ 13 .debug_pubtypes 0000001e  00000000  00000000  00001d49  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -38,7 +38,7 @@ Disassembly of section .text:
    0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
    4:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
    8:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
-   c:	0c 94 b9 01 	jmp	0x372	; 0x372 <__vector_3>
+   c:	0c 94 c4 01 	jmp	0x388	; 0x388 <__vector_3>
   10:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
   14:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
   18:	0c 94 47 00 	jmp	0x8e	; 0x8e <__bad_interrupt>
@@ -69,7 +69,7 @@ Disassembly of section .text:
   60:	10 e0       	ldi	r17, 0x00	; 0
   62:	a0 e6       	ldi	r26, 0x60	; 96
   64:	b0 e0       	ldi	r27, 0x00	; 0
-  66:	ec e1       	ldi	r30, 0x1C	; 28
+  66:	e2 e3       	ldi	r30, 0x32	; 50
   68:	f4 e0       	ldi	r31, 0x04	; 4
   6a:	02 c0       	rjmp	.+4      	; 0x70 <__do_copy_data+0x10>
   6c:	05 90       	lpm	r0, Z+
@@ -91,8 +91,8 @@ Disassembly of section .text:
   80:	af 3a       	cpi	r26, 0xAF	; 175
   82:	b1 07       	cpc	r27, r17
   84:	e1 f7       	brne	.-8      	; 0x7e <.do_clear_bss_loop>
-  86:	0e 94 8d 01 	call	0x31a	; 0x31a <main>
-  8a:	0c 94 0c 02 	jmp	0x418	; 0x418 <_exit>
+  86:	0e 94 98 01 	call	0x330	; 0x330 <main>
+  8a:	0c 94 17 02 	jmp	0x42e	; 0x42e <_exit>
 
 0000008e <__bad_interrupt>:
   8e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -512,243 +512,256 @@ void setumode(int m)
  29a:	30 e0       	ldi	r19, 0x00	; 0
  29c:	28 17       	cp	r18, r24
  29e:	39 07       	cpc	r19, r25
- 2a0:	71 f1       	breq	.+92     	; 0x2fe <setumode+0x68>
+ 2a0:	c9 f1       	breq	.+114    	; 0x314 <setumode+0x7e>
 		cli();
  2a2:	f8 94       	cli
 		switch (m) {
  2a4:	81 30       	cpi	r24, 0x01	; 1
  2a6:	91 05       	cpc	r25, r1
- 2a8:	69 f0       	breq	.+26     	; 0x2c4 <setumode+0x2e>
+ 2a8:	a9 f0       	breq	.+42     	; 0x2d4 <setumode+0x3e>
  2aa:	82 30       	cpi	r24, 0x02	; 2
  2ac:	91 05       	cpc	r25, r1
  2ae:	1c f4       	brge	.+6      	; 0x2b6 <setumode+0x20>
  2b0:	00 97       	sbiw	r24, 0x00	; 0
- 2b2:	61 f0       	breq	.+24     	; 0x2cc <setumode+0x36>
- 2b4:	21 c0       	rjmp	.+66     	; 0x2f8 <setumode+0x62>
+ 2b2:	41 f0       	breq	.+16     	; 0x2c4 <setumode+0x2e>
+ 2b4:	2c c0       	rjmp	.+88     	; 0x30e <setumode+0x78>
  2b6:	82 30       	cpi	r24, 0x02	; 2
  2b8:	91 05       	cpc	r25, r1
- 2ba:	41 f0       	breq	.+16     	; 0x2cc <setumode+0x36>
+ 2ba:	79 f0       	breq	.+30     	; 0x2da <setumode+0x44>
  2bc:	83 30       	cpi	r24, 0x03	; 3
  2be:	91 05       	cpc	r25, r1
- 2c0:	d9 f4       	brne	.+54     	; 0x2f8 <setumode+0x62>
- 2c2:	07 c0       	rjmp	.+14     	; 0x2d2 <setumode+0x3c>
+ 2c0:	31 f5       	brne	.+76     	; 0x30e <setumode+0x78>
+ 2c2:	12 c0       	rjmp	.+36     	; 0x2e8 <setumode+0x52>
 			case 0: {
 				US_ODDR &= ~(bv(US_OP) | bv(US_ON));
+ 2c4:	21 b3       	in	r18, 0x11	; 17
+ 2c6:	2f 79       	andi	r18, 0x9F	; 159
+ 2c8:	21 bb       	out	0x11, r18	; 17
+				time0 = 0;
+ 2ca:	10 92 ae 00 	sts	0x00AE, r1
+ 2ce:	10 92 ad 00 	sts	0x00AD, r1
 				break;
+ 2d2:	1d c0       	rjmp	.+58     	; 0x30e <setumode+0x78>
 			}
 			case 1: { //emit
+				US_OPORT |= bv(US_OP);
+ 2d4:	96 9a       	sbi	0x12, 6	; 18
+				US_OPORT &= ~(bv(US_ON));
+ 2d6:	95 98       	cbi	0x12, 5	; 18
+ 2d8:	03 c0       	rjmp	.+6      	; 0x2e0 <setumode+0x4a>
 			    US_ODDR |= bv(US_ON) | bv(US_OP);
- 2c4:	21 b3       	in	r18, 0x11	; 17
- 2c6:	20 66       	ori	r18, 0x60	; 96
- 2c8:	21 bb       	out	0x11, r18	; 17
 				break;
- 2ca:	16 c0       	rjmp	.+44     	; 0x2f8 <setumode+0x62>
 			}
 			case 2: {
-				US_ODDR &= ~(bv(US_OP) | bv(US_ON));
- 2cc:	21 b3       	in	r18, 0x11	; 17
- 2ce:	2f 79       	andi	r18, 0x9F	; 159
- 2d0:	fb cf       	rjmp	.-10     	; 0x2c8 <setumode+0x32>
+				US_OPORT &= ~(bv(US_ON) | bv(US_OP)); //Discharge piezo to ground
+ 2da:	22 b3       	in	r18, 0x12	; 18
+ 2dc:	2f 79       	andi	r18, 0x9F	; 159
+ 2de:	22 bb       	out	0x12, r18	; 18
+			    US_ODDR |= bv(US_ON) | bv(US_OP);
+ 2e0:	21 b3       	in	r18, 0x11	; 17
+ 2e2:	20 66       	ori	r18, 0x60	; 96
+ 2e4:	21 bb       	out	0x11, r18	; 17
 				break;
+ 2e6:	13 c0       	rjmp	.+38     	; 0x30e <setumode+0x78>
 			}
 			case 3: { //listen
 				US_ODDR &= ~(bv(US_OP) | bv(US_ON));
- 2d2:	21 b3       	in	r18, 0x11	; 17
- 2d4:	2f 79       	andi	r18, 0x9F	; 159
- 2d6:	21 bb       	out	0x11, r18	; 17
+ 2e8:	21 b3       	in	r18, 0x11	; 17
+ 2ea:	2f 79       	andi	r18, 0x9F	; 159
+ 2ec:	21 bb       	out	0x11, r18	; 17
 				uinlast = (US_IPIN & (bv(US_I))) != 0;
- 2d8:	29 b3       	in	r18, 0x19	; 25
- 2da:	21 70       	andi	r18, 0x01	; 1
- 2dc:	20 93 62 00 	sts	0x0062, r18
+ 2ee:	29 b3       	in	r18, 0x19	; 25
+ 2f0:	21 70       	andi	r18, 0x01	; 1
+ 2f2:	20 93 62 00 	sts	0x0062, r18
 				impcount = 0;
- 2e0:	10 92 64 00 	sts	0x0064, r1
- 2e4:	10 92 63 00 	sts	0x0063, r1
+ 2f6:	10 92 64 00 	sts	0x0064, r1
+ 2fa:	10 92 63 00 	sts	0x0063, r1
 				timest = 0;
- 2e8:	10 92 66 00 	sts	0x0066, r1
- 2ec:	10 92 65 00 	sts	0x0065, r1
+ 2fe:	10 92 66 00 	sts	0x0066, r1
+ 302:	10 92 65 00 	sts	0x0065, r1
 				timeen = 0;
- 2f0:	10 92 68 00 	sts	0x0068, r1
- 2f4:	10 92 67 00 	sts	0x0067, r1
+ 306:	10 92 68 00 	sts	0x0068, r1
+ 30a:	10 92 67 00 	sts	0x0067, r1
 				break;
 			}
 		}
 		umode = m;
- 2f8:	80 93 60 00 	sts	0x0060, r24
+ 30e:	80 93 60 00 	sts	0x0060, r24
 		sei();
- 2fc:	78 94       	sei
- 2fe:	08 95       	ret
+ 312:	78 94       	sei
+ 314:	08 95       	ret
 
-00000300 <init>:
+00000316 <init>:
 }
 
 
 void init(void)
 {
         initUSART();
- 300:	0e 94 49 00 	call	0x92	; 0x92 <initUSART>
+ 316:	0e 94 49 00 	call	0x92	; 0x92 <initUSART>
         initIO();
- 304:	0e 94 46 01 	call	0x28c	; 0x28c <initIO>
+ 31a:	0e 94 46 01 	call	0x28c	; 0x28c <initIO>
         initOC2();
- 308:	0e 94 30 01 	call	0x260	; 0x260 <initOC2>
+ 31e:	0e 94 30 01 	call	0x260	; 0x260 <initOC2>
 		US_OPORT |= bv(US_OP);
- 30c:	96 9a       	sbi	0x12, 6	; 18
+ 322:	96 9a       	sbi	0x12, 6	; 18
 		US_OPORT &= ~(bv(US_ON));
- 30e:	95 98       	cbi	0x12, 5	; 18
+ 324:	95 98       	cbi	0x12, 5	; 18
 		time0 = 0;
- 310:	10 92 ae 00 	sts	0x00AE, r1
- 314:	10 92 ad 00 	sts	0x00AD, r1
+ 326:	10 92 ae 00 	sts	0x00AE, r1
+ 32a:	10 92 ad 00 	sts	0x00AD, r1
 }
- 318:	08 95       	ret
+ 32e:	08 95       	ret
 
-0000031a <main>:
+00000330 <main>:
 
 int main(void)
 {
 
 	init();
- 31a:	0e 94 80 01 	call	0x300	; 0x300 <init>
+ 330:	0e 94 8b 01 	call	0x316	; 0x316 <init>
 	while (1)
 	{
 	//	cli();
 	//	ibi(OUT_PORT, OUT1);
 	//	sei();
 		if (time0 > TIME_LS) {
- 31e:	80 91 ad 00 	lds	r24, 0x00AD
- 322:	90 91 ae 00 	lds	r25, 0x00AE
- 326:	22 e1       	ldi	r18, 0x12	; 18
- 328:	85 39       	cpi	r24, 0x95	; 149
- 32a:	92 07       	cpc	r25, r18
- 32c:	18 f0       	brcs	.+6      	; 0x334 <main+0x1a>
-			setumode(0);
- 32e:	80 e0       	ldi	r24, 0x00	; 0
- 330:	90 e0       	ldi	r25, 0x00	; 0
- 332:	1c c0       	rjmp	.+56     	; 0x36c <main+0x52>
-		} else if (time0 > TIME_RL) {
  334:	80 91 ad 00 	lds	r24, 0x00AD
  338:	90 91 ae 00 	lds	r25, 0x00AE
- 33c:	89 33       	cpi	r24, 0x39	; 57
- 33e:	91 05       	cpc	r25, r1
- 340:	18 f0       	brcs	.+6      	; 0x348 <main+0x2e>
+ 33c:	22 e0       	ldi	r18, 0x02	; 2
+ 33e:	81 38       	cpi	r24, 0x81	; 129
+ 340:	92 07       	cpc	r25, r18
+ 342:	18 f0       	brcs	.+6      	; 0x34a <main+0x1a>
+			setumode(0);
+ 344:	80 e0       	ldi	r24, 0x00	; 0
+ 346:	90 e0       	ldi	r25, 0x00	; 0
+ 348:	1c c0       	rjmp	.+56     	; 0x382 <main+0x52>
+		} else if (time0 > TIME_RL) {
+ 34a:	80 91 ad 00 	lds	r24, 0x00AD
+ 34e:	90 91 ae 00 	lds	r25, 0x00AE
+ 352:	89 32       	cpi	r24, 0x29	; 41
+ 354:	91 05       	cpc	r25, r1
+ 356:	18 f0       	brcs	.+6      	; 0x35e <main+0x2e>
 			setumode(3);
- 342:	83 e0       	ldi	r24, 0x03	; 3
- 344:	90 e0       	ldi	r25, 0x00	; 0
- 346:	12 c0       	rjmp	.+36     	; 0x36c <main+0x52>
+ 358:	83 e0       	ldi	r24, 0x03	; 3
+ 35a:	90 e0       	ldi	r25, 0x00	; 0
+ 35c:	12 c0       	rjmp	.+36     	; 0x382 <main+0x52>
 		} else if (time0 > TIME_EM) {
- 348:	80 91 ad 00 	lds	r24, 0x00AD
- 34c:	90 91 ae 00 	lds	r25, 0x00AE
- 350:	8f 32       	cpi	r24, 0x2F	; 47
- 352:	91 05       	cpc	r25, r1
- 354:	18 f0       	brcs	.+6      	; 0x35c <main+0x42>
+ 35e:	80 91 ad 00 	lds	r24, 0x00AD
+ 362:	90 91 ae 00 	lds	r25, 0x00AE
+ 366:	85 31       	cpi	r24, 0x15	; 21
+ 368:	91 05       	cpc	r25, r1
+ 36a:	18 f0       	brcs	.+6      	; 0x372 <main+0x42>
 			setumode(2);
- 356:	82 e0       	ldi	r24, 0x02	; 2
- 358:	90 e0       	ldi	r25, 0x00	; 0
- 35a:	08 c0       	rjmp	.+16     	; 0x36c <main+0x52>
+ 36c:	82 e0       	ldi	r24, 0x02	; 2
+ 36e:	90 e0       	ldi	r25, 0x00	; 0
+ 370:	08 c0       	rjmp	.+16     	; 0x382 <main+0x52>
 		} else if (time0 > TIME_HL) {
- 35c:	80 91 ad 00 	lds	r24, 0x00AD
- 360:	90 91 ae 00 	lds	r25, 0x00AE
- 364:	00 97       	sbiw	r24, 0x00	; 0
- 366:	d9 f2       	breq	.-74     	; 0x31e <main+0x4>
+ 372:	80 91 ad 00 	lds	r24, 0x00AD
+ 376:	90 91 ae 00 	lds	r25, 0x00AE
+ 37a:	00 97       	sbiw	r24, 0x00	; 0
+ 37c:	d9 f2       	breq	.-74     	; 0x334 <main+0x4>
 			setumode(1);
- 368:	81 e0       	ldi	r24, 0x01	; 1
- 36a:	90 e0       	ldi	r25, 0x00	; 0
- 36c:	0e 94 4b 01 	call	0x296	; 0x296 <setumode>
- 370:	d6 cf       	rjmp	.-84     	; 0x31e <main+0x4>
+ 37e:	81 e0       	ldi	r24, 0x01	; 1
+ 380:	90 e0       	ldi	r25, 0x00	; 0
+ 382:	0e 94 4b 01 	call	0x296	; 0x296 <setumode>
+ 386:	d6 cf       	rjmp	.-84     	; 0x334 <main+0x4>
 
-00000372 <__vector_3>:
+00000388 <__vector_3>:
 
 }
 */
 
 ISR (TIMER2_COMP_vect)
 {
- 372:	1f 92       	push	r1
- 374:	0f 92       	push	r0
- 376:	0f b6       	in	r0, 0x3f	; 63
- 378:	0f 92       	push	r0
- 37a:	11 24       	eor	r1, r1
- 37c:	2f 93       	push	r18
- 37e:	3f 93       	push	r19
- 380:	8f 93       	push	r24
- 382:	9f 93       	push	r25
+ 388:	1f 92       	push	r1
+ 38a:	0f 92       	push	r0
+ 38c:	0f b6       	in	r0, 0x3f	; 63
+ 38e:	0f 92       	push	r0
+ 390:	11 24       	eor	r1, r1
+ 392:	2f 93       	push	r18
+ 394:	3f 93       	push	r19
+ 396:	8f 93       	push	r24
+ 398:	9f 93       	push	r25
 	switch (umode) {
- 384:	80 91 60 00 	lds	r24, 0x0060
- 388:	81 30       	cpi	r24, 0x01	; 1
- 38a:	19 f0       	breq	.+6      	; 0x392 <__vector_3+0x20>
- 38c:	83 30       	cpi	r24, 0x03	; 3
- 38e:	91 f5       	brne	.+100    	; 0x3f4 <__vector_3+0x82>
- 390:	05 c0       	rjmp	.+10     	; 0x39c <__vector_3+0x2a>
+ 39a:	80 91 60 00 	lds	r24, 0x0060
+ 39e:	81 30       	cpi	r24, 0x01	; 1
+ 3a0:	19 f0       	breq	.+6      	; 0x3a8 <__vector_3+0x20>
+ 3a2:	83 30       	cpi	r24, 0x03	; 3
+ 3a4:	91 f5       	brne	.+100    	; 0x40a <__vector_3+0x82>
+ 3a6:	05 c0       	rjmp	.+10     	; 0x3b2 <__vector_3+0x2a>
 		case 1: {
 			US_OPORT ^= bv(US_OP) | bv(US_ON);
- 392:	82 b3       	in	r24, 0x12	; 18
- 394:	90 e6       	ldi	r25, 0x60	; 96
- 396:	89 27       	eor	r24, r25
- 398:	82 bb       	out	0x12, r24	; 18
+ 3a8:	82 b3       	in	r24, 0x12	; 18
+ 3aa:	90 e6       	ldi	r25, 0x60	; 96
+ 3ac:	89 27       	eor	r24, r25
+ 3ae:	82 bb       	out	0x12, r24	; 18
 			break;
- 39a:	2c c0       	rjmp	.+88     	; 0x3f4 <__vector_3+0x82>
+ 3b0:	2c c0       	rjmp	.+88     	; 0x40a <__vector_3+0x82>
 		}
 		case 3: {
-			char uincur = (US_IPIN & (bv(US_I))) != 0;
- 39c:	29 b3       	in	r18, 0x19	; 25
- 39e:	21 70       	andi	r18, 0x01	; 1
-			if (uincur != uinlast) {
- 3a0:	30 91 62 00 	lds	r19, 0x0062
- 3a4:	80 91 63 00 	lds	r24, 0x0063
- 3a8:	90 91 64 00 	lds	r25, 0x0064
- 3ac:	23 17       	cp	r18, r19
- 3ae:	41 f0       	breq	.+16     	; 0x3c0 <__vector_3+0x4e>
+			char uincur = (US_IPIN & (bv(US_I))) != 0; //get true or false on input pin
+ 3b2:	29 b3       	in	r18, 0x19	; 25
+ 3b4:	21 70       	andi	r18, 0x01	; 1
+			if (uincur != uinlast) { //if was change during last half period
+ 3b6:	30 91 62 00 	lds	r19, 0x0062
+ 3ba:	80 91 63 00 	lds	r24, 0x0063
+ 3be:	90 91 64 00 	lds	r25, 0x0064
+ 3c2:	23 17       	cp	r18, r19
+ 3c4:	41 f0       	breq	.+16     	; 0x3d6 <__vector_3+0x4e>
 				uinlast = uincur;
- 3b0:	20 93 62 00 	sts	0x0062, r18
-				impcount++;
- 3b4:	01 96       	adiw	r24, 0x01	; 1
- 3b6:	90 93 64 00 	sts	0x0064, r25
- 3ba:	80 93 63 00 	sts	0x0063, r24
- 3be:	1a c0       	rjmp	.+52     	; 0x3f4 <__vector_3+0x82>
+ 3c6:	20 93 62 00 	sts	0x0062, r18
+				impcount++; //then increase impulse count
+ 3ca:	01 96       	adiw	r24, 0x01	; 1
+ 3cc:	90 93 64 00 	sts	0x0064, r25
+ 3d0:	80 93 63 00 	sts	0x0063, r24
+ 3d4:	1a c0       	rjmp	.+52     	; 0x40a <__vector_3+0x82>
 			} else {
-				if (impcount<IMPULSES) {
- 3c0:	87 31       	cpi	r24, 0x17	; 23
- 3c2:	91 05       	cpc	r25, r1
- 3c4:	68 f4       	brcc	.+26     	; 0x3e0 <__vector_3+0x6e>
-					impcount = 0; //wrong work
- 3c6:	10 92 64 00 	sts	0x0064, r1
- 3ca:	10 92 63 00 	sts	0x0063, r1
+				if (impcount<IMPULSES) { //otherwise if impulse count below minimum
+ 3d6:	8a 30       	cpi	r24, 0x0A	; 10
+ 3d8:	91 05       	cpc	r25, r1
+ 3da:	68 f4       	brcc	.+26     	; 0x3f6 <__vector_3+0x6e>
+					impcount = 0; //then wrong work, it was may be ghost :)
+ 3dc:	10 92 64 00 	sts	0x0064, r1
+ 3e0:	10 92 63 00 	sts	0x0063, r1
 					timest = time0;
- 3ce:	80 91 ad 00 	lds	r24, 0x00AD
- 3d2:	90 91 ae 00 	lds	r25, 0x00AE
- 3d6:	90 93 66 00 	sts	0x0066, r25
- 3da:	80 93 65 00 	sts	0x0065, r24
- 3de:	0a c0       	rjmp	.+20     	; 0x3f4 <__vector_3+0x82>
-				} else {
-					umode = 0; //finish listening here
- 3e0:	10 92 60 00 	sts	0x0060, r1
-					timeen = time0;
  3e4:	80 91 ad 00 	lds	r24, 0x00AD
  3e8:	90 91 ae 00 	lds	r25, 0x00AE
- 3ec:	90 93 68 00 	sts	0x0068, r25
- 3f0:	80 93 67 00 	sts	0x0067, r24
+ 3ec:	90 93 66 00 	sts	0x0066, r25
+ 3f0:	80 93 65 00 	sts	0x0065, r24
+ 3f4:	0a c0       	rjmp	.+20     	; 0x40a <__vector_3+0x82>
+				} else { //otherwise we got result in pulses
+					umode = 0; //finish listening here
+ 3f6:	10 92 60 00 	sts	0x0060, r1
+					timeen = time0;
+ 3fa:	80 91 ad 00 	lds	r24, 0x00AD
+ 3fe:	90 91 ae 00 	lds	r25, 0x00AE
+ 402:	90 93 68 00 	sts	0x0068, r25
+ 406:	80 93 67 00 	sts	0x0067, r24
 			}
 			break;
 		}
 	}
 
 	time0++;
- 3f4:	80 91 ad 00 	lds	r24, 0x00AD
- 3f8:	90 91 ae 00 	lds	r25, 0x00AE
- 3fc:	01 96       	adiw	r24, 0x01	; 1
- 3fe:	90 93 ae 00 	sts	0x00AE, r25
- 402:	80 93 ad 00 	sts	0x00AD, r24
+ 40a:	80 91 ad 00 	lds	r24, 0x00AD
+ 40e:	90 91 ae 00 	lds	r25, 0x00AE
+ 412:	01 96       	adiw	r24, 0x01	; 1
+ 414:	90 93 ae 00 	sts	0x00AE, r25
+ 418:	80 93 ad 00 	sts	0x00AD, r24
 }
- 406:	9f 91       	pop	r25
- 408:	8f 91       	pop	r24
- 40a:	3f 91       	pop	r19
- 40c:	2f 91       	pop	r18
- 40e:	0f 90       	pop	r0
- 410:	0f be       	out	0x3f, r0	; 63
- 412:	0f 90       	pop	r0
- 414:	1f 90       	pop	r1
- 416:	18 95       	reti
+ 41c:	9f 91       	pop	r25
+ 41e:	8f 91       	pop	r24
+ 420:	3f 91       	pop	r19
+ 422:	2f 91       	pop	r18
+ 424:	0f 90       	pop	r0
+ 426:	0f be       	out	0x3f, r0	; 63
+ 428:	0f 90       	pop	r0
+ 42a:	1f 90       	pop	r1
+ 42c:	18 95       	reti
 
-00000418 <_exit>:
- 418:	f8 94       	cli
+0000042e <_exit>:
+ 42e:	f8 94       	cli
 
-0000041a <__stop_program>:
- 41a:	ff cf       	rjmp	.-2      	; 0x41a <__stop_program>
+00000430 <__stop_program>:
+ 430:	ff cf       	rjmp	.-2      	; 0x430 <__stop_program>
