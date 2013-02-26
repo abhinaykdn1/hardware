@@ -20,9 +20,8 @@ void inituart(void)
 {
 	UBRR0L = LO(BAUDDIVIDER);
 	UBRR0H = HI(BAUDDIVIDER);
-	UCSR0B = 1<<RXEN0|1<<TXEN0|1<<RXCIE0|1<<TXCIE0;
-	UCSR0C = 1<<UCSZ00|1<<UCSZ01;
-
+	UCSR0B = bv(RXEN0)|bv(TXEN0)|bv(RXCIE0)|bv(TXCIE0);
+	UCSR0C = bv(UCSZ00)|bv(UCSZ01);
 
 	usart_rx_wp = 0;
 	usart_rx_rp = 0;
