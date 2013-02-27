@@ -4,6 +4,7 @@
 	.equ	BAUDRATE = 57600
 	.equ	BAUDDIVIDER = F_CPU/(16*BAUDRATE)-1
 	.equ	TIMER0A_VAL = 147
+	.equ	PWM_CYCLE = 512
 
 ;	.equ	PWMO0	R2
 ;	.equ	PWMO1	R3
@@ -64,8 +65,9 @@ Reset:
 	CLR		R1            		// Clear register, R1 always zero
 
 Init:
-	LDI		R26,0				// X register as timer
-	LDI		R27,2				// 200h for one PWM cycle
+	LDI		R26,Low(PWM_CYCLE)	// X register as timer
+	LDI		R27,High(PWM_CYCLE)	// 200h for one PWM cycle
+
 
 InitUART:
 	LDI		R28,Low(BAUDDIVIDER)
@@ -112,7 +114,7 @@ Start:
 	STS		pwm_out+0,R28
 	LDI		R28,80
 	STS		pwm_out+1,R28
-	LDI		R28,150
+	LDI		R28,250
 	STS		pwm_out+2,R28
 	LDI		R28,220
 	STS		pwm_out+3,R28
@@ -142,10 +144,10 @@ LoadPWMToRegs:
 	
 
 MainLoop:
-	LDI		R28,0b00000011		//
-	OUT		PORTC,R28
-	LDI		R28,0b00001100
-	OUT		PORTC,R28
+//	LDI		R28,0b00000011		//
+//	OUT		PORTC,R28
+//	LDI		R28,0b00001100
+//	OUT		PORTC,R28
 	
 	RJMP	MainLoop	
 
@@ -230,16 +232,45 @@ TIMER0_COMPA_vect:
 	PUSH	R28
 	IN		R28,SREG
 	PUSH	R28
+	IN		R19,PORTB
+	OUT		PORTC,R18
+
 	SBIW	R26,1
+	BREQ	TIMER0_out
+
 	LDI		R28,1
 	SUB		R2,R28
+	ROR		R20		
 	SUB		R3,R28
+	ROR		R20		
 	SUB		R4,R28
+	ROR		R20		
 	SUB		R5,R28
+	ROR		R20		
 	SUB		R6,R28
+	ROR		R20		
 	SUB		R7,R28
+	ROR		R20		
 	SUB		R8,R28
+	ROR		R20		
 	SUB		R9,R28
+	ROR		R20
+	SBRC	R27,0
+	EOR		R18,R20		
+	RJMP	TIMER0_ret
+TIMER0_out:
+	LDI		R26,Low(PWM_CYCLE)	// X register as timer
+	LDI		R27,High(PWM_CYCLE)	// 200h for one PWM cycle
+	LDS		R2,pwm_out+0
+	LDS		R3,pwm_out+1
+	LDS		R4,pwm_out+2
+	LDS		R5,pwm_out+3
+	LDS		R6,pwm_out+4
+	LDS		R7,pwm_out+5
+	LDS		R8,pwm_out+6
+	LDS		R9,pwm_out+7
+	LDI		R18,0xFF
+TIMER0_ret:
 	POP		R28
 	OUT		SREG,R28
 	POP		R28
@@ -303,7 +334,7 @@ TX_buf_not_empty_yet:
 	RETI
 
 TextMsg:
-	.db		"V0.0",13,10,0
+	.db		"V0.1",13,10,"READY",13,10,0
 
 
 .ESEG

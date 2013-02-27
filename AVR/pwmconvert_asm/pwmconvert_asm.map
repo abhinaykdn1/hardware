@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.42  E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert.asm Wed Feb 27 20:13:33 2013
+AVRASM ver. 2.1.42  E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert.asm Thu Feb 28 01:10:40 2013
 
 
 EQU  SIGNATURE_000 0000001e
@@ -679,6 +679,7 @@ EQU  F_CPU        00e10000
 EQU  BAUDRATE     0000e100
 EQU  BAUDDIVIDER  0000000f
 EQU  TIMER0A_VAL  00000093
+EQU  PWM_CYCLE    00000200
 EQU  uart_rx_buf_size 00000010
 EQU  uart_tx_buf_size 00000010
 DSEG uart_rx_buf  00000100
@@ -690,29 +691,31 @@ DSEG uart_tx_rp   00000123
 DSEG pwm_out      00000124
 DSEG pwm_in       0000012c
 CSEG Reset        0000001a
-CSEG TIMER0_COMPA_vect 000000b6
-CSEG USART_RX_vect 000000c7
-CSEG USART_TX_vect 000000de
+CSEG TIMER0_COMPA_vect 000000b2
+CSEG USART_RX_vect 000000e4
+CSEG USART_TX_vect 000000fb
 CSEG Init         0000001f
 CSEG InitUART     00000021
 CSEG InitTimers   00000035
 CSEG InitTimer0   00000035
 CSEG InitDDR      00000042
 CSEG Start        00000046
-CSEG TextMsg      000000ff
-CSEG PutStrFlash  00000076
+CSEG TextMsg      0000011c
+CSEG PutStrFlash  00000072
 CSEG LoadPWMToRegs 00000061
 CSEG MainLoop     00000071
-CSEG PutStrFlash_loop 00000079
-CSEG PutStrFlash_end 0000007e
-CSEG PutChar      0000008e
-CSEG PutStr       00000082
-CSEG PutStr_loop  00000085
-CSEG PutStr_end   0000008a
-CSEG TX_buf_overflow 000000b0
-CSEG TX_in_progress 000000b0
-CSEG TX_buf_not_empty_yet_putchar 000000b0
-CSEG TX_buf_is_empty_putchar 000000ac
-CSEG RX_buf_overflow 000000d8
-CSEG TX_buf_is_empty 000000f2
-CSEG TX_buf_not_empty_yet 000000f6
+CSEG PutStrFlash_loop 00000075
+CSEG PutStrFlash_end 0000007a
+CSEG PutChar      0000008a
+CSEG PutStr       0000007e
+CSEG PutStr_loop  00000081
+CSEG PutStr_end   00000086
+CSEG TX_buf_overflow 000000ac
+CSEG TX_in_progress 000000ac
+CSEG TX_buf_not_empty_yet_putchar 000000ac
+CSEG TX_buf_is_empty_putchar 000000a8
+CSEG TIMER0_out   000000cd
+CSEG TIMER0_ret   000000e0
+CSEG RX_buf_overflow 000000f5
+CSEG TX_buf_is_empty 0000010f
+CSEG TX_buf_not_empty_yet 00000113
