@@ -13,16 +13,19 @@ void inittimers(void)
 	TIMSK0 |= bv(OCIE0A); //Interrupt on compare
 	TCCR0A |= bv(WGM01); //CTC (clear on compare) mode
 
-	TCCR0B = 0x01; //Prescaller clk/1
+//	TCCR0B = 0x01; //Prescaller clk/1
+	TCCR0B = 0x02; //Prescaller clk/64
  
     OCR0A = TIMER0A_VALUE;
 }
 
+
+//ISR (TIMER0_COMPA_vect, ISR_NAKED)
 ISR (TIMER0_COMPA_vect)
 {
 	time0++;
-	last_in_portb = PINB;
-	last_in_portd = PIND;
+//	last_in_portb = PINB;
+//	last_in_portd = PIND;
 	PORTC = last_out_portc;
 	PORTD = last_out_portd;
 //	PORTC ^= 0x02;

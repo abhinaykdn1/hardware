@@ -1,0 +1,1 @@
+timerint.o: ../timerint.s

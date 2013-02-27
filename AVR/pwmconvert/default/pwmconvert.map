@@ -15,6 +15,7 @@ usart_rx_rp         0x1               pwmconvert.o
 usart_tx_wp         0x1               pwmconvert.o
 usart_rx_buf        0x20              pwmconvert.o
 usart_tx_rp         0x1               pwmconvert.o
+outpwmtmp           0x8               pwmconvert.o
 usart_rx_wp         0x1               pwmconvert.o
 outpwm              0x8               pwmconvert.o
 cmd_buf             0x4               pwmconvert.o
@@ -36,6 +37,7 @@ Linker script and memory map
 Address of section .data set to 0x800100
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm48p.o
 LOAD pwmconvert.o
+LOAD timerint.o
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a
 LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a
@@ -130,7 +132,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x2b4
+.text           0x00000000      0x3a2
  *(.vectors)
  .vectors       0x00000000       0x34 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm48p.o
                 0x00000000                __vector_default
@@ -207,7 +209,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00000054                __vector_8
                 0x00000054                __vector_10
                 0x00000054                __vector_16
- .text          0x00000056      0x25a pwmconvert.o
+ .text          0x00000056      0x348 pwmconvert.o
                 0x00000056                inituart
                 0x0000007e                __vector_18
                 0x000000be                __vector_20
@@ -216,19 +218,20 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00000172                getchr
                 0x000001a6                inittimers
                 0x000001c0                __vector_14
-                0x0000020c                init
-                0x0000026c                main
- .text          0x000002b0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
- .text          0x000002b0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
-                0x000002b0                . = ALIGN (0x2)
+                0x00000200                init
+                0x00000266                main
+ .text          0x0000039e        0x0 timerint.o
+ .text          0x0000039e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .text          0x0000039e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
+                0x0000039e                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x000002b0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
- .text.libgcc   0x000002b0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
-                0x000002b0                . = ALIGN (0x2)
+ .text.libgcc   0x0000039e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .text.libgcc   0x0000039e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
+                0x0000039e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000002b0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
-                0x000002b0                _exit
-                0x000002b0                exit
+ .fini9         0x0000039e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+                0x0000039e                _exit
+                0x0000039e                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -247,15 +250,16 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000002b0        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .fini0         0x0000039e        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x000002b4                _etext = .
+                0x000003a2                _etext = .
 
-.data           0x00800100        0x0 load address 0x000002b4
+.data           0x00800100        0x0 load address 0x000003a2
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm48p.o
  .data          0x00800100        0x0 pwmconvert.o
+ .data          0x00800100        0x0 timerint.o
  .data          0x00800100        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
  .data          0x00800100        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
  *(.data*)
@@ -266,7 +270,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00800100                _edata = .
                 0x00800100                PROVIDE (__data_end, .)
 
-.bss            0x00800100       0x60
+.bss            0x00800100       0x68
                 0x00800100                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x00800100        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm48p.o
@@ -276,11 +280,12 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00800102                last_in_portd
                 0x00800103                last_out_portc
                 0x00800104                last_out_portd
+ .bss           0x00800105        0x0 timerint.o
  .bss           0x00800105        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
  .bss           0x00800105        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800105       0x5b pwmconvert.o
+ COMMON         0x00800105       0x63 pwmconvert.o
                 0x00800105                cmd_buf_p
                 0x00800106                inpwm
                 0x0080010e                usart_tx_buf
@@ -288,20 +293,21 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x0080012f                usart_tx_wp
                 0x00800130                usart_rx_buf
                 0x00800150                usart_tx_rp
-                0x00800151                usart_rx_wp
-                0x00800152                outpwm
-                0x0080015a                cmd_buf
-                0x0080015e                time0
-                0x00800160                PROVIDE (__bss_end, .)
-                0x000002b4                __data_load_start = LOADADDR (.data)
-                0x000002b4                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800151                outpwmtmp
+                0x00800159                usart_rx_wp
+                0x0080015a                outpwm
+                0x00800162                cmd_buf
+                0x00800166                time0
+                0x00800168                PROVIDE (__bss_end, .)
+                0x000003a2                __data_load_start = LOADADDR (.data)
+                0x000003a2                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800160        0x0
-                0x00800160                PROVIDE (__noinit_start, .)
+.noinit         0x00800168        0x0
+                0x00800168                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800160                PROVIDE (__noinit_end, .)
-                0x00800160                _end = .
-                0x00800160                PROVIDE (__heap_start, .)
+                0x00800168                PROVIDE (__noinit_end, .)
+                0x00800168                _end = .
+                0x00800168                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -360,36 +366,36 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00000000       0x20 pwmconvert.o
 
 .debug_pubnames
-                0x00000000      0x189
+                0x00000000      0x197
  *(.debug_pubnames)
  .debug_pubnames
-                0x00000000      0x189 pwmconvert.o
+                0x00000000      0x197 pwmconvert.o
 
-.debug_info     0x00000000      0x3ce
+.debug_info     0x00000000      0x40e
  *(.debug_info)
- .debug_info    0x00000000      0x3ce pwmconvert.o
+ .debug_info    0x00000000      0x40e pwmconvert.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x100
+.debug_abbrev   0x00000000      0x11c
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x100 pwmconvert.o
+ .debug_abbrev  0x00000000      0x11c pwmconvert.o
 
-.debug_line     0x00000000      0x3c4
+.debug_line     0x00000000      0x52a
  *(.debug_line)
- .debug_line    0x00000000      0x3c4 pwmconvert.o
+ .debug_line    0x00000000      0x52a pwmconvert.o
 
 .debug_frame    0x00000000       0xb0
  *(.debug_frame)
  .debug_frame   0x00000000       0xb0 pwmconvert.o
 
-.debug_str      0x00000000      0x1a6
+.debug_str      0x00000000      0x1be
  *(.debug_str)
- .debug_str     0x00000000      0x1a6 pwmconvert.o
-                                0x1df (size before relaxing)
+ .debug_str     0x00000000      0x1be pwmconvert.o
+                                0x1f7 (size before relaxing)
 
-.debug_loc      0x00000000      0x116
+.debug_loc      0x00000000       0xc6
  *(.debug_loc)
- .debug_loc     0x00000000      0x116 pwmconvert.o
+ .debug_loc     0x00000000       0xc6 pwmconvert.o
 
 .debug_macinfo
  *(.debug_macinfo)

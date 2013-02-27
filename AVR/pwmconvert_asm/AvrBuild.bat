@@ -1,0 +1,2 @@
+@ECHO OFF
+"C:\Program Files\Atmel\AVR Tools\AvrAssembler2\avrasm2.exe" -S "E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\labels.tmp" -fI -W+ie -C V2E -o "E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert_asm.hex" -d "E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert_asm.obj" -e "E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert_asm.eep" -m "E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert_asm.map" "E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert.asm"
