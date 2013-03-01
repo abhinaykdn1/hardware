@@ -3,7 +3,7 @@
 .ORG INT1addr	;External Interrupt1
 	RETI
 .ORG PCI0addr	;Pin Change Interrupt0
-	RETI
+	RJMP	PCI0_vect
 .ORG PCI1addr	;Pin Change Interrupt1
 	RETI
 .ORG PCI2addr	;Pin Change Interrupt2
