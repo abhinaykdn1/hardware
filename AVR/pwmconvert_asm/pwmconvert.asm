@@ -1,7 +1,8 @@
 .include "m48def.inc"
 
 	.equ	F_CPU = 14745600
-	.equ	BAUDRATE = 57600
+//	.equ	BAUDRATE = 57600
+	.equ	BAUDRATE = 115200
 	.equ	BAUDDIVIDER = F_CPU/(16*BAUDRATE)-1
 	.equ	MIN_TIME_US = 10 //10us = 0.01 ms
 	.equ	TIMER0A_VAL = F_CPU/10000/MIN_TIME_US //147
@@ -48,12 +49,15 @@ pwm_in:
 pwm_in_tmp:
 	.byte	8
 
+eeprom_data_start:
 pwm_in_out_msk:
 	.byte	8
 pwm_in_out_mul: //PWMout = add + (PWMin * mul / 8)
 	.byte	8
 pwm_in_out_add:
 	.byte	8
+eeprom_data_end:
+
 .CSEG
 
 .ORG 0x0000
@@ -119,11 +123,33 @@ InitDDR:
 	OUT		DDRB,R1				//PORTB for input
 	LDI		R28,0b00111111
 	OUT		DDRC,R28			//PORTC0 - PORTC5 for output
+	LDI		R28,0b11111100
+	OUT		DDRD,R28
+	LDI		R28,0b11000000		//LED1 & LED2 off
+	OUT		PORTD,R28
+//	LDI		R28,0b00000000		//LED1 & LED2 off
+//	OUT		PORTD,R28
 
 	SEI
 
 Start:
-//Default data
+	LDI		R28,150
+	STS		pwm_in+0,R28
+	LDI		R28,150
+	STS		pwm_in+1,R28
+	LDI		R28,150
+	STS		pwm_in+2,R28
+	LDI		R28,150
+	STS		pwm_in+3,R28
+	LDI		R28,0
+	STS		pwm_in+4,R28
+	LDI		R28,0
+	STS		pwm_in+5,R28
+	LDI		R28,0
+	STS		pwm_in+6,R28
+	LDI		R28,0
+	STS		pwm_in+7,R28
+
 	LDI		R28,150
 	STS		pwm_out+0,R28
 	LDI		R28,150
@@ -141,13 +167,21 @@ Start:
 	LDI		R28,0
 	STS		pwm_out+7,R28
 
-	LDI		R28,0
+	LDI		R24,Low(eeprom_data_start_eeprom)		//Test if EEPROM not initialized
+	LDI		R25,High(eeprom_data_start_eeprom)
+
+	RCALL	EERead
+	CPI		R29,0xFF
+	BREQ	LoadDefaults
+	RJMP	LoadFromEEPROM
+LoadDefaults:			//Default data
+	LDI		R28,1
 	STS		pwm_in_out_msk+0,R28
-	LDI		R28,0
+	LDI		R28,1
 	STS		pwm_in_out_msk+1,R28
-	LDI		R28,0
+	LDI		R28,1
 	STS		pwm_in_out_msk+2,R28
-	LDI		R28,0
+	LDI		R28,1
 	STS		pwm_in_out_msk+3,R28
 	LDI		R28,0
 	STS		pwm_in_out_msk+4,R28
@@ -158,13 +192,13 @@ Start:
 	LDI		R28,0
 	STS		pwm_in_out_msk+7,R28
 
-	LDI		R28,8
+	LDI		R28,9
 	STS		pwm_in_out_mul+0,R28
-	LDI		R28,8
+	LDI		R28,10
 	STS		pwm_in_out_mul+1,R28
-	LDI		R28,8
+	LDI		R28,10
 	STS		pwm_in_out_mul+2,R28
-	LDI		R28,8
+	LDI		R28,9
 	STS		pwm_in_out_mul+3,R28
 	LDI		R28,8
 	STS		pwm_in_out_mul+4,R28
@@ -175,13 +209,13 @@ Start:
 	LDI		R28,8
 	STS		pwm_in_out_mul+7,R28
 
-	LDI		R28,0
+	LDI		R28,-19
 	STS		pwm_in_out_add+0,R28
-	LDI		R28,0
+	LDI		R28,-38
 	STS		pwm_in_out_add+1,R28
-	LDI		R28,0
+	LDI		R28,-39
 	STS		pwm_in_out_add+2,R28
-	LDI		R28,0
+	LDI		R28,-16
 	STS		pwm_in_out_add+3,R28
 	LDI		R28,0
 	STS		pwm_in_out_add+4,R28
@@ -191,7 +225,17 @@ Start:
 	STS		pwm_in_out_add+6,R28
 	LDI		R28,0
 	STS		pwm_in_out_add+7,R28
+	RJMP	PutVersionMessage
 
+LoadFromEEPROM:
+	LDI		R24,Low(eeprom_data_start_eeprom)
+	LDI		R25,High(eeprom_data_start_eeprom)
+	LDI		R30,Low(eeprom_data_start)
+	LDI		R31,High(eeprom_data_start)
+	LDI		R28,(eeprom_data_end-eeprom_data_start)
+	RCALL	EEPROMToMem
+
+PutVersionMessage:
 	LDI		R30,Low(2*TextMsg)
 	LDI		R31,High(2*TextMsg)
 	RCALL	PutStrFlash
@@ -219,12 +263,83 @@ MainLoop:
 	
 	RJMP	MainLoop	
 
+CommandWriteToEEPROM:
+	LDI		R24,Low(eeprom_data_start_eeprom)
+	LDI		R25,High(eeprom_data_start_eeprom)
+	LDI		R30,Low(eeprom_data_start)
+	LDI		R31,High(eeprom_data_start)
+	LDI		R28,(eeprom_data_end-eeprom_data_start)
+	RCALL	MemToEEPROM
+	LDI		R30,Low(2*EEPROMOkMsg)
+	LDI		R31,High(2*EEPROMOkMsg)
+	RCALL	PutStrFlash
+
+	RJMP	ProcessCommandEnd
+
+CommandReadFromEEPROM:
+	LDI		R24,Low(eeprom_data_start_eeprom)
+	LDI		R25,High(eeprom_data_start_eeprom)
+	LDI		R30,Low(eeprom_data_start)
+	LDI		R31,High(eeprom_data_start)
+	LDI		R28,(eeprom_data_end-eeprom_data_start)
+	RCALL	EEPROMToMem
+	LDI		R30,Low(2*EEPROMOkMsg)
+	LDI		R31,High(2*EEPROMOkMsg)
+	RCALL	PutStrFlash
+
+	RJMP	ProcessCommandEnd
+
+CommandEnter:
+	LDI		R28,10
+	RCALL	PutChar
+	RJMP	ProcessCommandEnd
+
+CommandBreak:
+	RJMP	ProcessCommandEnd
+
+CommandHelp:
+	LDI		R30,Low(2*HelpMsg)
+	LDI		R31,High(2*HelpMsg)
+	RCALL	PutStrFlash
+	RJMP	ProcessCommandEnd
+
+CommandInputArray:
+	RCALL	PutPWMInArray
+	LDI		R28,13
+	RCALL	PutChar
+	LDI		R28,10
+	RCALL	PutChar
+	RJMP	ProcessCommandEnd
+CommandOutputArray:
+	RCALL	PutPWMOutArray
+	LDI		R28,13
+	RCALL	PutChar
+	LDI		R28,10
+	RCALL	PutChar
+	RJMP	ProcessCommandEnd
+CommandTrimOpts:
+	RCALL	PutPWMTrimOpts
+	LDI		R28,13
+	RCALL	PutChar
+	LDI		R28,10
+	RCALL	PutChar
+	RJMP	ProcessCommandEnd
+
+
 ProcessCommand:					//In R28 - first letter of command
 	PUSH	R28
 	PUSH	R29
 	PUSH	R30
 	PUSH	R31
 	ANDI	R28,~0x20
+	CPI		R28,'E'
+	BREQ	CommandWriteToEEPROM
+	CPI		R28,'R'
+	BREQ	CommandReadFromEEPROM
+	CPI		R28,13
+	BREQ	CommandEnter
+	CPI		R28,'Q'
+	BREQ	CommandBreak
 	CPI		R28,'H'
 	BREQ	CommandHelp
 	CPI		R28,'I'
@@ -241,26 +356,9 @@ ProcessCommand:					//In R28 - first letter of command
 	BREQ	CommandSetPWMAdd
 	CPI		R28,'U'
 	BREQ	CommandSetPWMMul
-	CPI		R28,'Q'
-	BREQ	CommandBreak
 
 	RJMP	ProcessCommandEnd
-CommandBreak:
-	RJMP	ProcessCommandEnd
-CommandHelp:
-	LDI		R30,Low(2*HelpMsg)
-	LDI		R31,High(2*HelpMsg)
-	RCALL	PutStrFlash
-	RJMP	ProcessCommandEnd
-CommandInputArray:
-	RCALL	PutPWMInArray
-	RJMP	ProcessCommandEnd
-CommandOutputArray:
-	RCALL	PutPWMOutArray
-	RJMP	ProcessCommandEnd
-CommandTrimOpts:
-	RCALL	PutPWMTrimOpts
-	RJMP	ProcessCommandEnd
+
 CommandSetOutputPWM:
 	RCALL	GetChar
 	ANDI	R28,0x07
@@ -333,6 +431,68 @@ ProcessCommandEnd:
 	RET
 
 ;Subroutines
+MemToEEPROM:	//R25 R24 - EEPROM start address, R31 R30 - Memory start address, R28 - length
+MemToEEPROM_loop:
+	LD		R29,Z+
+	RCALL	EEWrite
+
+	SUBI	R24,-1
+	SBCI	R25,-1
+	SUBI	R28,1
+	BRNE	MemToEEPROM_loop
+	RET
+
+
+EEPROMToMem:	//R25 R24 - EEPROM start address, R31 R30 - Memory start address, R28 - length
+EEPROMToMem_loop:
+	RCALL	EERead
+	ST		Z+,R29
+
+	SUBI	R24,-1
+	SBCI	R25,-1
+	SUBI	R28,1
+	BRNE	EEPROMToMem_loop
+
+	RET
+
+EEWrite:			//R29 - byte to write, R25 R24 - EEPROM address
+	SBIC	EECR,EEWE
+	RJMP	EEWrite
+ 
+	CLI
+	OUT 	EEARL,R24
+//	OUT 	EEARH,R25
+	OUT 	EEDR,R29
+	SBI 	EECR,EEMWE
+	SBI 	EECR,EEWE
+	SEI
+/*
+	PUSH	R28
+	LDI		R28,'W'
+	RCALL	PutChar
+	MOV		R28,R29
+	RCALL	PutHexByte
+	POP		R28
+*/
+	RET
+ 
+EERead:				//R25 R24 - EEPROM address, return R29 
+	SBIC 	EECR,EEWE
+	RJMP	EERead
+	OUT 	EEARL,R24
+//	OUT  	EEARH,R25
+	SBI 	EECR,EERE
+	IN 		R29,EEDR
+/*
+	PUSH	R28
+	LDI		R28,'R'
+	RCALL	PutChar
+	MOV		R28,R29
+	RCALL	PutHexByte
+	POP		R28
+*/
+	RET
+
 HexToByte:		//R29 (Hi) R28 (Lo) hex -> R28 byte
 	PUSH	R29
 	SUBI	R29,'0'	
@@ -813,6 +973,8 @@ USART_RX_vect:
 	PUSH	R30
 	PUSH	R31
 
+	CBI		PORTD,7				//Blink LED1
+
 	LDS		R28,UDR0
 	LDS		R30,uart_rx_wp		//Load direct from data space
 	CPI		R30,uart_rx_buf_size
@@ -824,6 +986,9 @@ USART_RX_vect:
 	STS		uart_rx_wp,R30
 
 RX_buf_overflow:				//Ignore data from UART if buffer overflow
+
+	SBI		PORTD,7				//Blink LED1
+
 	POP		R31
 	POP		R30
 	POP		R28
@@ -838,6 +1003,8 @@ USART_TX_vect:
 	PUSH	R29
 	PUSH	R30
 	PUSH	R31
+
+	CBI		PORTD,6				//Blink LED2
 
 	LDS		R28,uart_tx_wp
 	LDS		R30,uart_tx_rp
@@ -855,6 +1022,9 @@ TX_buf_is_empty:
 	CLR		R30
 TX_buf_not_empty_yet:
 	STS		uart_tx_rp,R30
+
+	SBI		PORTD,6				//Blink LED2
+
 	POP		R31
 	POP		R30
 	POP		R29
@@ -870,10 +1040,22 @@ HelpMsg:
 	.db		13,10,"I - Show input array"
 	.db		13,10,"O - Show output array "
 	.db		13,10,"T - Show trim info"
+	.db		13,10,"E - Write trim info to EEPROM "
+	.db		13,10,"R - Read trim info from EEPROM"
 	.db		13,10,"Sxhh - Set x (0..8) output PWM to hh"
 	.db		13,10,"Mxhh - Set PWM in-out mask"
 	.db		13,10,"Axhh - Set PWM trim "
 	.db		13,10,"Uxhh - Set PWM multiply "
 	.db		13,10,0,0
+EEPromOkMsg:
+	.db		"OK",13,10,0,0
 
 .ESEG
+eeprom_data_start_eeprom:
+pwm_in_out_msk_eeprom:
+	.db		1,1,1,1,0,0,0,0
+pwm_in_out_mul_eeprom:
+	.db		9,10,10,9,8,8,8,8
+pwm_in_out_add_eeprom:
+	.db		-19,-38,-39,-16,0,0,0,0
+eeprom_data_end_eeprom:

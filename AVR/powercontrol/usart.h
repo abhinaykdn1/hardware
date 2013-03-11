@@ -1,3 +1,4 @@
+#define BAUDRATE 57600
 #define BAUDDIVIDER (F_CPU/(16*BAUDRATE)-1)
 #define USART_TX_BUF 32
 #define USART_RX_BUF 32
@@ -12,32 +13,31 @@ char usart_tx_buf[USART_TX_BUF];
 
 void initUSART(void)
 {
-        UBRRL = LO(BAUDDIVIDER);
-        UBRRH = HI(BAUDDIVIDER);
-        UCSRA = 0;
-        UCSRB = 1<<RXEN|1<<TXEN|1<<RXCIE|1<<TXCIE;
-        UCSRC = 1<<URSEL|1<<UCSZ0|1<<UCSZ1;
+	UBRR0L = LO(BAUDDIVIDER);
+	UBRR0H = HI(BAUDDIVIDER);
+	UCSR0B = 1<<RXEN0|1<<TXEN0|1<<RXCIE0|1<<TXCIE0;
+	UCSR0C = 1<<UCSZ00|1<<UCSZ01;
 
-		usart_rx_wp = 0;
-		usart_rx_rp = 0;
+	usart_rx_wp = 0;
+	usart_rx_rp = 0;
 
-		usart_tx_wp = 0;
-		usart_tx_rp = 0;
+	usart_tx_wp = 0;
+	usart_tx_rp = 0;
 }
 
-ISR(USART_RXC_vect)
+ISR(USART_RX_vect)
 {
-	char c = UDR;
+	char c = UDR0;
 	if (usart_rx_wp<USART_RX_BUF) {
 		usart_rx_buf[usart_rx_wp] = c;
 		usart_rx_wp++;
 	} //if buffer overflow, we lose byte from UART
 }
 
-ISR(USART_TXC_vect)
+ISR(USART_TX_vect)
 {
 	if (usart_tx_rp<usart_tx_wp) {
-		UDR = usart_tx_buf[usart_tx_rp];
+		UDR0 = usart_tx_buf[usart_tx_rp];
 		usart_tx_rp++;
 		if (usart_tx_rp>=usart_tx_wp) {
 			usart_tx_rp = 0;
@@ -55,8 +55,8 @@ void putchr(char ch)
 	usart_tx_wp++;
 	sei();
 
-	if (UCSRA & (1<<UDRE)) {
-		UDR = usart_tx_buf[usart_tx_rp];
+	if (UCSR0A & (1<<UDRE0)) {
+		UDR0 = usart_tx_buf[usart_tx_rp];
 		usart_tx_rp++;
 		if (usart_tx_rp>=usart_tx_wp) {
 			usart_tx_rp = 0;
