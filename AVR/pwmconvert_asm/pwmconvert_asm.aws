@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 <AVRWorkspace><IOSettings><CurrentRegisters/></IOSettings><part name="ATMEGA48P"/><Files><File00000 Name="E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\pwmconvert.asm" Position="662 72 1567 760" LineCol="262 0" State="Maximized"/><File00001 Name="E:\DOCUMENTS\PERSONALPROJECTS\hardware\AVR\PWMCONVERT_ASM\intvectors.asm" Position="688 117 1383 576" LineCol="0 0" State="Maximized"/></Files></AVRWorkspace>
+=======
+<AVRWorkspace><IOSettings><CurrentRegisters/></IOSettings><part name="ATMEGA48P"/><Files><File00000 Name="E:\DOCUMENTS\Projects\hardware\AVR\PWMCONVERT_ASM\pwmconvert.asm" Position="570 95 1153 507" LineCol="95 0" State="Maximized"/><File00001 Name="E:\DOCUMENTS\Projects\hardware\AVR\PWMCONVERT_ASM\intvectors.asm" Position="566 72 1327 659" LineCol="0 0" State="Maximized"/></Files></AVRWorkspace>
+>>>>>>> 009ec308e508bb90d668f19cf72da200b82c02db
