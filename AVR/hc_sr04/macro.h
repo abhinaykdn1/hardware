@@ -1,0 +1,8 @@
+#define HI(x) ((x)>>8)
+#define LO(x) ((x)& 0xFF)
+#define BV(bit) (1<<(bit))
+#define CBI(reg,bit) reg &= ~(bv(bit))
+#define SBI(reg,bit) reg |= (bv(bit))
+#define IBI(reg,bit) reg ^= (bv(bit))
+#define OUTB(addr, data) addr = (data)
+#define INB(addr) (addr)
