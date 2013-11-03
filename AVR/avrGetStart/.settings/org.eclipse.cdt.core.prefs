@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/de.innot.avreclipse.configuration.app.release.1281338069/AVRDUDEOPTIONS/delimiter=\:
+environment/project/de.innot.avreclipse.configuration.app.release.1281338069/AVRDUDEOPTIONS/operation=replace
+environment/project/de.innot.avreclipse.configuration.app.release.1281338069/AVRDUDEOPTIONS/value=-pm48pa -cstk500v2 -P/dev/tty.SLAB_USBtoUART
+environment/project/de.innot.avreclipse.configuration.app.release.1281338069/append=true
+environment/project/de.innot.avreclipse.configuration.app.release.1281338069/appendContributed=true

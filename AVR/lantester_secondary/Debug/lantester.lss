@@ -1,0 +1,325 @@
+
+lantester.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000206  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000006  00800060  00800060  0000027a  2**0
+                  ALLOC
+  2 .stab         00000c54  00000000  00000000  0000027c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000856  00000000  00000000  00000ed0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3e 00 	jmp	0x7c	; 0x7c <__vector_3>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d4 e0       	ldi	r29, 0x04	; 4
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a6 36       	cpi	r26, 0x66	; 102
+  6c:	b1 07       	cpc	r27, r17
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 ae 00 	call	0x15c	; 0x15c <main>
+  74:	0c 94 01 01 	jmp	0x202	; 0x202 <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <__vector_3>:
+
+volatile long time = 0;
+volatile int wtime = 0;
+
+ISR(TIMER2_COMP_vect)
+{
+  7c:	1f 92       	push	r1
+  7e:	0f 92       	push	r0
+  80:	0f b6       	in	r0, 0x3f	; 63
+  82:	0f 92       	push	r0
+  84:	11 24       	eor	r1, r1
+  86:	8f 93       	push	r24
+  88:	9f 93       	push	r25
+  8a:	af 93       	push	r26
+  8c:	bf 93       	push	r27
+  8e:	df 93       	push	r29
+  90:	cf 93       	push	r28
+  92:	cd b7       	in	r28, 0x3d	; 61
+  94:	de b7       	in	r29, 0x3e	; 62
+	cli();
+  96:	f8 94       	cli
+	time++;
+  98:	80 91 60 00 	lds	r24, 0x0060
+  9c:	90 91 61 00 	lds	r25, 0x0061
+  a0:	a0 91 62 00 	lds	r26, 0x0062
+  a4:	b0 91 63 00 	lds	r27, 0x0063
+  a8:	01 96       	adiw	r24, 0x01	; 1
+  aa:	a1 1d       	adc	r26, r1
+  ac:	b1 1d       	adc	r27, r1
+  ae:	80 93 60 00 	sts	0x0060, r24
+  b2:	90 93 61 00 	sts	0x0061, r25
+  b6:	a0 93 62 00 	sts	0x0062, r26
+  ba:	b0 93 63 00 	sts	0x0063, r27
+	wtime++;
+  be:	80 91 64 00 	lds	r24, 0x0064
+  c2:	90 91 65 00 	lds	r25, 0x0065
+  c6:	01 96       	adiw	r24, 0x01	; 1
+  c8:	90 93 65 00 	sts	0x0065, r25
+  cc:	80 93 64 00 	sts	0x0064, r24
+    sei();
+  d0:	78 94       	sei
+}
+  d2:	cf 91       	pop	r28
+  d4:	df 91       	pop	r29
+  d6:	bf 91       	pop	r27
+  d8:	af 91       	pop	r26
+  da:	9f 91       	pop	r25
+  dc:	8f 91       	pop	r24
+  de:	0f 90       	pop	r0
+  e0:	0f be       	out	0x3f, r0	; 63
+  e2:	0f 90       	pop	r0
+  e4:	1f 90       	pop	r1
+  e6:	18 95       	reti
+
+000000e8 <initTimer2>:
+
+void initTimer2()
+{
+  e8:	df 93       	push	r29
+  ea:	cf 93       	push	r28
+  ec:	cd b7       	in	r28, 0x3d	; 61
+  ee:	de b7       	in	r29, 0x3e	; 62
+	TCCR2 = (1<<WGM21)|(0<<WGM20)|(0b011<<CS20); //CTC mode, prescaller CLK/64
+  f0:	85 e4       	ldi	r24, 0x45	; 69
+  f2:	90 e0       	ldi	r25, 0x00	; 0
+  f4:	2b e0       	ldi	r18, 0x0B	; 11
+  f6:	fc 01       	movw	r30, r24
+  f8:	20 83       	st	Z, r18
+ 	OCR2 = 249; // 16 000 00 Hz / 64 / 250 = 1000 Hz
+  fa:	83 e4       	ldi	r24, 0x43	; 67
+  fc:	90 e0       	ldi	r25, 0x00	; 0
+  fe:	29 ef       	ldi	r18, 0xF9	; 249
+ 100:	fc 01       	movw	r30, r24
+ 102:	20 83       	st	Z, r18
+ 	TIMSK = (1<<OCIE2); //Interrupt on second timer compare
+ 104:	89 e5       	ldi	r24, 0x59	; 89
+ 106:	90 e0       	ldi	r25, 0x00	; 0
+ 108:	20 e8       	ldi	r18, 0x80	; 128
+ 10a:	fc 01       	movw	r30, r24
+ 10c:	20 83       	st	Z, r18
+}
+ 10e:	cf 91       	pop	r28
+ 110:	df 91       	pop	r29
+ 112:	08 95       	ret
+
+00000114 <wait>:
+
+void wait(int tms)
+{
+ 114:	df 93       	push	r29
+ 116:	cf 93       	push	r28
+ 118:	00 d0       	rcall	.+0      	; 0x11a <wait+0x6>
+ 11a:	cd b7       	in	r28, 0x3d	; 61
+ 11c:	de b7       	in	r29, 0x3e	; 62
+ 11e:	9a 83       	std	Y+2, r25	; 0x02
+ 120:	89 83       	std	Y+1, r24	; 0x01
+	wtime = 0;
+ 122:	10 92 65 00 	sts	0x0065, r1
+ 126:	10 92 64 00 	sts	0x0064, r1
+	while (wtime < tms) {
+ 12a:	00 00       	nop
+ 12c:	20 91 64 00 	lds	r18, 0x0064
+ 130:	30 91 65 00 	lds	r19, 0x0065
+ 134:	89 81       	ldd	r24, Y+1	; 0x01
+ 136:	9a 81       	ldd	r25, Y+2	; 0x02
+ 138:	28 17       	cp	r18, r24
+ 13a:	39 07       	cpc	r19, r25
+ 13c:	bc f3       	brlt	.-18     	; 0x12c <wait+0x18>
+	}
+}
+ 13e:	0f 90       	pop	r0
+ 140:	0f 90       	pop	r0
+ 142:	cf 91       	pop	r28
+ 144:	df 91       	pop	r29
+ 146:	08 95       	ret
+
+00000148 <init>:
+
+void init()
+{
+ 148:	df 93       	push	r29
+ 14a:	cf 93       	push	r28
+ 14c:	cd b7       	in	r28, 0x3d	; 61
+ 14e:	de b7       	in	r29, 0x3e	; 62
+	initTimer2();
+ 150:	0e 94 74 00 	call	0xe8	; 0xe8 <initTimer2>
+	sei();
+ 154:	78 94       	sei
+}
+ 156:	cf 91       	pop	r28
+ 158:	df 91       	pop	r29
+ 15a:	08 95       	ret
+
+0000015c <main>:
+
+int main()
+{
+ 15c:	df 93       	push	r29
+ 15e:	cf 93       	push	r28
+ 160:	00 d0       	rcall	.+0      	; 0x162 <main+0x6>
+ 162:	0f 92       	push	r0
+ 164:	cd b7       	in	r28, 0x3d	; 61
+ 166:	de b7       	in	r29, 0x3e	; 62
+	init();
+ 168:	0e 94 a4 00 	call	0x148	; 0x148 <init>
+
+	DDRD = 0xFF;
+ 16c:	81 e3       	ldi	r24, 0x31	; 49
+ 16e:	90 e0       	ldi	r25, 0x00	; 0
+ 170:	2f ef       	ldi	r18, 0xFF	; 255
+ 172:	fc 01       	movw	r30, r24
+ 174:	20 83       	st	Z, r18
+	PORTD = 0;
+ 176:	82 e3       	ldi	r24, 0x32	; 50
+ 178:	90 e0       	ldi	r25, 0x00	; 0
+ 17a:	fc 01       	movw	r30, r24
+ 17c:	10 82       	st	Z, r1
+	wait(100);
+ 17e:	84 e6       	ldi	r24, 0x64	; 100
+ 180:	90 e0       	ldi	r25, 0x00	; 0
+ 182:	0e 94 8a 00 	call	0x114	; 0x114 <wait>
+	char rp = 0;
+ 186:	1a 82       	std	Y+2, r1	; 0x02
+	char rv = 0;
+ 188:	1b 82       	std	Y+3, r1	; 0x03
+
+	while (1) {
+		for (char shft = 0; shft < 8; shft++)
+ 18a:	19 82       	std	Y+1, r1	; 0x01
+ 18c:	36 c0       	rjmp	.+108    	; 0x1fa <main+0x9e>
+		{
+			rp = 0b11111111 << shft;
+ 18e:	89 81       	ldd	r24, Y+1	; 0x01
+ 190:	28 2f       	mov	r18, r24
+ 192:	30 e0       	ldi	r19, 0x00	; 0
+ 194:	8f ef       	ldi	r24, 0xFF	; 255
+ 196:	90 e0       	ldi	r25, 0x00	; 0
+ 198:	02 c0       	rjmp	.+4      	; 0x19e <main+0x42>
+ 19a:	88 0f       	add	r24, r24
+ 19c:	99 1f       	adc	r25, r25
+ 19e:	2a 95       	dec	r18
+ 1a0:	e2 f7       	brpl	.-8      	; 0x19a <main+0x3e>
+ 1a2:	8a 83       	std	Y+2, r24	; 0x02
+
+			//even bits
+			rv = rp & 0b01010101;
+ 1a4:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1a6:	85 75       	andi	r24, 0x55	; 85
+ 1a8:	8b 83       	std	Y+3, r24	; 0x03
+			PORTD = rv;
+ 1aa:	82 e3       	ldi	r24, 0x32	; 50
+ 1ac:	90 e0       	ldi	r25, 0x00	; 0
+ 1ae:	2b 81       	ldd	r18, Y+3	; 0x03
+ 1b0:	fc 01       	movw	r30, r24
+ 1b2:	20 83       	st	Z, r18
+			wait(5);
+ 1b4:	85 e0       	ldi	r24, 0x05	; 5
+ 1b6:	90 e0       	ldi	r25, 0x00	; 0
+ 1b8:	0e 94 8a 00 	call	0x114	; 0x114 <wait>
+			PORTD = 0;
+ 1bc:	82 e3       	ldi	r24, 0x32	; 50
+ 1be:	90 e0       	ldi	r25, 0x00	; 0
+ 1c0:	fc 01       	movw	r30, r24
+ 1c2:	10 82       	st	Z, r1
+			wait(5);
+ 1c4:	85 e0       	ldi	r24, 0x05	; 5
+ 1c6:	90 e0       	ldi	r25, 0x00	; 0
+ 1c8:	0e 94 8a 00 	call	0x114	; 0x114 <wait>
+
+			//odd bits
+			rv = rp & 0b10101010;
+ 1cc:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1ce:	8a 7a       	andi	r24, 0xAA	; 170
+ 1d0:	8b 83       	std	Y+3, r24	; 0x03
+			PORTD = rv;
+ 1d2:	82 e3       	ldi	r24, 0x32	; 50
+ 1d4:	90 e0       	ldi	r25, 0x00	; 0
+ 1d6:	2b 81       	ldd	r18, Y+3	; 0x03
+ 1d8:	fc 01       	movw	r30, r24
+ 1da:	20 83       	st	Z, r18
+			wait(5);
+ 1dc:	85 e0       	ldi	r24, 0x05	; 5
+ 1de:	90 e0       	ldi	r25, 0x00	; 0
+ 1e0:	0e 94 8a 00 	call	0x114	; 0x114 <wait>
+			PORTD = 0;
+ 1e4:	82 e3       	ldi	r24, 0x32	; 50
+ 1e6:	90 e0       	ldi	r25, 0x00	; 0
+ 1e8:	fc 01       	movw	r30, r24
+ 1ea:	10 82       	st	Z, r1
+			wait(5);
+ 1ec:	85 e0       	ldi	r24, 0x05	; 5
+ 1ee:	90 e0       	ldi	r25, 0x00	; 0
+ 1f0:	0e 94 8a 00 	call	0x114	; 0x114 <wait>
+	wait(100);
+	char rp = 0;
+	char rv = 0;
+
+	while (1) {
+		for (char shft = 0; shft < 8; shft++)
+ 1f4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1f6:	8f 5f       	subi	r24, 0xFF	; 255
+ 1f8:	89 83       	std	Y+1, r24	; 0x01
+ 1fa:	89 81       	ldd	r24, Y+1	; 0x01
+ 1fc:	88 30       	cpi	r24, 0x08	; 8
+ 1fe:	38 f2       	brcs	.-114    	; 0x18e <main+0x32>
+			PORTD = rv;
+			wait(5);
+			PORTD = 0;
+			wait(5);
+		}
+	}
+ 200:	c4 cf       	rjmp	.-120    	; 0x18a <main+0x2e>
+
+00000202 <_exit>:
+ 202:	f8 94       	cli
+
+00000204 <__stop_program>:
+ 204:	ff cf       	rjmp	.-2      	; 0x204 <__stop_program>
