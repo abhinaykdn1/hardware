@@ -1,0 +1,2 @@
+@ECHO OFF
+"C:\Program Files\Atmel\AVR Tools\AvrAssembler2\avrasm2.exe" -S "E:\Projects\Personal\hardware\AVR\FASTPWM2812\labels.tmp" -fI -W+ie -C V2E -o "E:\Projects\Personal\hardware\AVR\FASTPWM2812\FastPWM2812.hex" -d "E:\Projects\Personal\hardware\AVR\FASTPWM2812\FastPWM2812.obj" -e "E:\Projects\Personal\hardware\AVR\FASTPWM2812\FastPWM2812.eep" -m "E:\Projects\Personal\hardware\AVR\FASTPWM2812\FastPWM2812.map" "E:\Projects\Personal\hardware\AVR\FASTPWM2812\FastPWM2812.asm"
