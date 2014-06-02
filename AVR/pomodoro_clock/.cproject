@@ -31,7 +31,7 @@
 							</tool>
 							<tool id="de.innot.avreclipse.tool.compiler.winavr.app.debug.64551402" name="AVR Compiler" superClass="de.innot.avreclipse.tool.compiler.winavr.app.debug">
 								<option id="de.innot.avreclipse.compiler.option.debug.level.1689965028" name="Generate Debugging Info" superClass="de.innot.avreclipse.compiler.option.debug.level"/>
-								<option id="de.innot.avreclipse.compiler.option.optimize.2065423023" name="Optimization Level" superClass="de.innot.avreclipse.compiler.option.optimize"/>
+								<option id="de.innot.avreclipse.compiler.option.optimize.2065423023" name="Optimization Level" superClass="de.innot.avreclipse.compiler.option.optimize" value="de.innot.avreclipse.compiler.optimize.none" valueType="enumerated"/>
 								<inputType id="de.innot.avreclipse.compiler.winavr.input.1766679145" name="C Source Files" superClass="de.innot.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="de.innot.avreclipse.tool.cppcompiler.app.debug.1900605463" name="AVR C++ Compiler" superClass="de.innot.avreclipse.tool.cppcompiler.app.debug">
@@ -139,4 +139,5 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="de.innot.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
