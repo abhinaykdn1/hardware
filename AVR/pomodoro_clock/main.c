@@ -56,8 +56,10 @@ const uint16_t PROGMEM numfnt [] = {
 uint8_t j = 0;
 uint16_t k = 0;
 uint8_t pixels[54*3];
+uint8_t current[54*3];
 uint8_t needrefresh = 1;
 uint8_t needshow = 1;
+uint8_t finished = 0;
 
 uint8_t hours = 0;
 uint8_t minutes = 0;
@@ -70,12 +72,25 @@ uint8_t t_restmin = 5;
 uint8_t defred = 16;
 uint8_t defgreen = 4;
 uint8_t defblue = 0;
+uint8_t timnred = 16;
+uint8_t timngreen = 4;
+uint8_t timnblue = 0;
+uint8_t timwred = 32;
+uint8_t timwgreen = 0;
+uint8_t timwblue = 0;
+uint8_t timrred = 0;
+uint8_t timrgreen = 0;
+uint8_t timrblue = 16;
+
+uint16_t thr = 0;
+uint16_t thrmax = 3200;
 
 uint8_t mode = 0; //0 - hh:mm, 1 - mm:ss, 2 - ptimer wrk, 3 - ptimer rest
 
 void clrscr() {
 	for (uint8_t i = 0; i<54*3; i++) {
 		pixels[i] = 0;
+		current[i] = 0;
 	}
 }
 
@@ -85,10 +100,10 @@ void setnum(uint8_t pos, uint8_t num) {
 	uint16_t symbit = pgm_read_word(&numfnt[num]);
 	uint8_t i = 13;
 	while (i) {
-		uint8_t pxr = defred;
-		uint8_t pxg = defgreen;
-		uint8_t pxb = defblue;
 		uint8_t msk = (symbit&0x8000)?255:0;
+		uint8_t pxr = defred&msk;
+		uint8_t pxg = defgreen&msk;
+		uint8_t pxb = defblue&msk;
 		pixels[saddr*3+0] = pxg&msk;
 		pixels[saddr*3+1] = pxr&msk;
 		pixels[saddr*3+2] = pxb&msk;
@@ -109,10 +124,23 @@ void setpt(uint8_t pos, uint8_t num) {
 	pixels[saddr*3+2] = pxb&msk;
 }
 
-void refresh() {
+void gotocurrent() {
+	for (uint8_t i = 0; i<54*3; i++) {
+		if (current[i]<pixels[i]) {
+			current[i] = current[i] + 1;
+			finished = 0;
+		} else if (current[i]>pixels[i]) {
+			current[i] = current[i] - 1;
+			finished = 0;
+		}
+	}
+}
+
+//TODO: move 2812 interaction to separate module
+void refresh() { //TODO make all loop at asm, optimize nop with jp
 	cli();
 	for (uint8_t i = 0; i<54*3; i++) {
-		uint8_t ibyte = pixels[i];
+		uint8_t ibyte = current[i];
 		uint8_t bc = 8;
 		asm volatile (
 //				"	cli"							"\n\t"
@@ -201,9 +229,9 @@ void timeplus() {
 void showtime() {
 	switch (mode) {
 		case 1: {
-			defred = 16;
-			defgreen = 4;
-			defblue = 0;
+			defred = timnred;
+			defgreen = timngreen;
+			defblue = timnblue;
 
 			uint8_t sec10 = 0;
 			uint8_t sec1 = seconds;
@@ -226,9 +254,9 @@ void showtime() {
 			break;
 		}
 		case 2: {
-			defred = 32;
-			defgreen = 0;
-			defblue = 0;
+			defred = timwred;
+			defgreen = timwgreen;
+			defblue = timwblue;
 
 			uint8_t sec10 = 0;
 			uint8_t sec1 = t_seconds;
@@ -251,9 +279,9 @@ void showtime() {
 			break;
 		}
 		case 3: {
-			defred = 0;
-			defgreen = 0;
-			defblue = 16;
+			defred = timrred;
+			defgreen = timrgreen;
+			defblue = timrblue;
 
 			uint8_t sec10 = 0;
 			uint8_t sec1 = t_seconds;
@@ -278,9 +306,9 @@ void showtime() {
 		case 0:
 		default:
 		{
-			defred = 16;
-			defgreen = 4;
-			defblue = 0;
+			defred = timnred;
+			defgreen = timngreen;
+			defblue = timnblue;
 
 			uint8_t min10 = 0;
 			uint8_t min1 = minutes;
@@ -308,10 +336,6 @@ void showtime() {
 			break;
 		}
 	}
-
-
-
-
 
 	needrefresh = 1;
 }
@@ -346,7 +370,7 @@ void init() {
 	needrefresh = 1;
 	needshow = 1;
 	clrscr();
-
+	thrmax = 3200;
 //	setnum(0,2);
 //	setnum(1,3);
 //	setnum(2,2);
@@ -365,8 +389,16 @@ void chkpgm() {
 void loop() {
 	chkpgm();
 	if (needrefresh) {
-		needrefresh = 0;
-		refresh();
+		thr++;
+		if (thr > thrmax) { //TODO: throttle with timer
+			thr = 0;
+			finished = 1;
+			gotocurrent();
+			refresh();
+			if (finished) {
+				needrefresh = 0;
+			}
+		}
 	}
 	if (needshow) {
 		showtime();
@@ -374,33 +406,57 @@ void loop() {
 	}
 	if (chrready()) {
 		char ch = getchr();
-		putchr(ch);
-		switch (ch) {
+//		putchr(ch);
+		switch (ch) { //TODO: add help
+			case 'h':
+			{
+				printstr("\n\r"
+						"h - help\n\r"
+						"txxxxxx - set time\n\r"
+						"wxx - set worktime\n\r"
+						"rxx - set resttime\n\r"
+						"mx - mode\n\r"
+						"s - start work\n\r"
+						"a - start rest\n\r"
+						"fxxxx - set fade delay\n\r"
+						"cyxxxxxx - set color for k\n\r");
+				break;
+			}
 			case 't':
 			{
+				printstr("time");
 				hours = hextochar(getchr())*10;
 				hours += hextochar(getchr());
+				printhex(hours);
 				minutes = hextochar(getchr())*10;
 				minutes += hextochar(getchr());
+				printhex(minutes);
 				seconds = hextochar(getchr())*10;
 				seconds += hextochar(getchr());
+				printhex(seconds);
 				break;
 			}
 			case 'w':
 			{
+				printstr("worktime");
 				t_workmin = hextochar(getchr())*10;
 				t_workmin += hextochar(getchr());
+				printhex(t_workmin);
 				break;
 			}
 			case 'r':
 			{
+				printstr("resttime");
 				t_restmin = hextochar(getchr())*10;
 				t_restmin += hextochar(getchr());
+				printhex(t_restmin);
 				break;
 			}
 			case 'm':
 			{
+				printstr("mode");
 				mode = hextochar(getchr());
+				printhex(mode);
 				break;
 			}
 			case 's':
@@ -413,9 +469,57 @@ void loop() {
 				startrest();
 				break;
 			}
+			case 'f':
+			{
+				printstr("fade");
+				thrmax = hextochar(getchr())*4096;
+				thrmax += hextochar(getchr())*256;
+				thrmax += hextochar(getchr())*16;
+				thrmax += hextochar(getchr());
+				printhex((thrmax&0xff00)>>8);
+				printhex(thrmax&0x00ff);
+				break;
+			}
+			case 'c':
+			{
+				printstr("color");
+				uint8_t colnum = hextochar(getchr());
+				printhex(colnum);
+				uint8_t rcol = hextochar(getchr())*16;
+				rcol += hextochar(getchr());
+				printhex(rcol);
+				uint8_t gcol = hextochar(getchr())*16;
+				gcol += hextochar(getchr());
+				printhex(gcol);
+				uint8_t bcol = hextochar(getchr())*16;
+				bcol += hextochar(getchr());
+				printhex(bcol);
+
+			switch (colnum) {
+				case 0:
+					timnred = rcol;
+					timngreen = gcol;
+					timnblue = bcol;
+					break;
+				case 1:
+					timwred = rcol;
+					timwgreen = gcol;
+					timwblue = bcol;
+					break;
+				case 2:
+					timrred = rcol;
+					timrgreen = gcol;
+					timrblue = bcol;
+					break;
+				default:
+					break;
+			}
+			}
 			default:
 				break;
 		}
+		printstr("\n\rok\n\r");
+
 	}
 
 
