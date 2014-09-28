@@ -20,6 +20,26 @@ void init(void) {
 	sei();
 }
 
+void lcd_printhex(uint8_t c)
+{
+	char lo = c & 0x0F;
+	char hi = (c & 0xF0) >> 4;
+	lcd_putchar(hi + ((hi<10)?'0':'A'-10));
+	lcd_putchar(lo + ((lo<10)?'0':'A'-10));
+}
+
+void lcd_printdec(uint16_t pc) {
+	uint16_t c = pc;
+	char *n = "              ";
+	uint8_t i = 4;
+	n[i--] = (c % 10) + '0';
+	while (c) {
+		c = c / 10;
+		n[i--] = (c % 10) + '0';
+	}
+	lcd_putstr(n);
+}
+
 int main(void)
 {
 	init();
@@ -28,35 +48,38 @@ int main(void)
 	lcd_optimize(0);
 	lcd_rotate(1);
 	lcd_clear(0x00);
-	lcd_putstr("Muwa u Mawa");
 
+//	uint8_t x = 0;
+	uint32_t avg_dist = 0;
 	while (1) {
+//		lcd_clear(0x00);
+		lcd_textpos(0,0);
 		uint16_t dist = getDistance();
-		lcd_overlay(1);
-		for (uint8_t x=0; x<LCD_WIDTH; x++) {
-			for (uint8_t y=0; y<LCD_HEIGHT; y++) {
-				lcd_point(x,y);
-//				lcd_send_buffer();
-			}
-			lcd_send_buffer();
-		}
-//		lcd_send_buffer();
-		for (uint8_t x=0; x<LCD_WIDTH; x+=2) {
-			lcd_line(0,0,x,LCD_HEIGHT-1);
-			lcd_line(LCD_WIDTH-1,0,x,LCD_HEIGHT-1);
-			lcd_line(x,0,LCD_WIDTH-1,LCD_HEIGHT-1);
-			lcd_line(x,0,0,LCD_HEIGHT-1);
-			lcd_send_buffer();
-		}
-//		lcd_send_buffer();
+		avg_dist = (dist + 7*avg_dist)>>3;
+//		lcd_printhex((dist>>8)&0x00FF);
+//		lcd_printhex(dist&0x00FF);
+		lcd_printdec(dist);
+		lcd_printdec(avg_dist);
+//		uint32_t dist_cm = dist/116;
+//		uint16_t dist_cm = dist/29;
+//		lcd_printdec(dist_cm);
+//		uint32_t vol_l = ((dist*10)/231);
+//		uint16_t vol_l = dist/4;
+//		lcd_printdec(vol_l);
 
-		for (uint8_t r=0; r<LCD_HEIGHT; r+=2) {
-			lcd_circle(LCD_WIDTH/2,LCD_HEIGHT/2,r);
-			lcd_send_buffer();
-		}
+//		uint8_t dst = (dist>>7)%LCD_HEIGHT;
+//		lcd_overlay(0);
+//		lcd_line(x, LCD_HEIGHT-1, x, 0);
+//		lcd_overlay(1);
+//		lcd_line(x, LCD_HEIGHT-1, x, 0);
+//		lcd_overlay(0);
+//		lcd_line(x, LCD_HEIGHT-1, x, dst);
 //		lcd_send_buffer();
-
-		lcd_overlay(0);
+//
+//		x++;
+//		if (x>LCD_WIDTH) {
+//			x = 0;
+//		}
 	}
 
 

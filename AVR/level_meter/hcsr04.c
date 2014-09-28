@@ -25,14 +25,14 @@ void trigger() {
 }
 
 uint16_t measure() {
+	INVP(RXLED);
 	while (!PINV(HCSR04_ECHO)) {
-		INVP(RXLED);
 	}
 	measureTime();
 	while (PINV(HCSR04_ECHO)) {
-		INVP(RXLED);
 	}
 	uint16_t result = measureTime();
+	INVP(RXLED);
 	return result;
 }
 

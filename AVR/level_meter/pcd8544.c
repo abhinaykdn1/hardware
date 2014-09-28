@@ -257,6 +257,12 @@ void lcd_putchar(char ch) {
 	text_buf.pos++;
 }
 
+void lcd_textpos(uint8_t x, uint8_t y) {
+	if ((x<LCD_WIDTH) && (y<LCD_HEIGHT)) {
+		text_buf.pos = x + y*LCD_WIDTH;
+	}
+}
+
 void lcd_putstr(char *str)
 {
     while (*str) {
