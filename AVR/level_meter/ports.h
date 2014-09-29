@@ -101,6 +101,8 @@
 #define PORTA_A3 PORT_C3
 #define PORTA_A4 PORT_C4
 #define PORTA_A5 PORT_C5
+#define TXLED PORT_B5
+#define RXLED PORT_B5
 #endif
 
 #define SETPM(port, ddr, pin, portnum) port = (port | (1<<portnum))

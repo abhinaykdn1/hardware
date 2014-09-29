@@ -52,20 +52,18 @@ int main(void)
 //	uint8_t x = 0;
 	uint32_t avg_dist = 0;
 	while (1) {
-//		lcd_clear(0x00);
 		lcd_textpos(0,0);
 		uint16_t dist = getDistance();
 		avg_dist = (dist + 7*avg_dist)>>3;
-//		lcd_printhex((dist>>8)&0x00FF);
-//		lcd_printhex(dist&0x00FF);
-		lcd_printdec(dist);
+		uint16_t div_factor = 116;
+		uint16_t dist_cm = avg_dist/div_factor;
+		uint32_t vol_l = dist*10;
+		div_factor = 231;
+		vol_l = vol_l/div_factor;
+		lcd_printdec(vol_l);
+		lcd_printdec(dist_cm);
 		lcd_printdec(avg_dist);
-//		uint32_t dist_cm = dist/116;
-//		uint16_t dist_cm = dist/29;
-//		lcd_printdec(dist_cm);
-//		uint32_t vol_l = ((dist*10)/231);
-//		uint16_t vol_l = dist/4;
-//		lcd_printdec(vol_l);
+		lcd_printdec(dist);
 
 //		uint8_t dst = (dist>>7)%LCD_HEIGHT;
 //		lcd_overlay(0);
