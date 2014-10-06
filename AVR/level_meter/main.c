@@ -30,12 +30,13 @@ void lcd_printhex(uint8_t c)
 
 void lcd_printdec(uint16_t pc) {
 	uint16_t c = pc;
-	char *n = "              ";
+	char n[] = "              ";
 	uint8_t i = 4;
 	n[i--] = (c % 10) + '0';
-	while (c) {
-		c = c / 10;
+	c = c / 10;
+	while (c>0) {
 		n[i--] = (c % 10) + '0';
+		c = c / 10;
 	}
 	lcd_putstr(n);
 }
@@ -55,11 +56,11 @@ int main(void)
 		lcd_textpos(0,0);
 		uint16_t dist = getDistance();
 		avg_dist = (dist + 7*avg_dist)>>3;
-		uint16_t div_factor = 116;
-		uint16_t dist_cm = avg_dist/div_factor;
-		uint32_t vol_l = dist*10;
-		div_factor = 231;
-		vol_l = vol_l/div_factor;
+//		uint16_t div_factor = 116;
+		uint16_t dist_cm = avg_dist/116;
+		uint16_t vol_l = (((uint32_t)dist)*10)/231;
+//		div_factor = 231;
+//		vol_l = vol_l/div_factor;
 		lcd_printdec(vol_l);
 		lcd_printdec(dist_cm);
 		lcd_printdec(avg_dist);
