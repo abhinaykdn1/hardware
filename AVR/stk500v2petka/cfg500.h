@@ -11,7 +11,7 @@ Author: Guido Socher
 // remember to change this version string after any update:
 #define AVRUSB500VSTR   "avrusb500v2-1.2 \r\n"
 
-#define BAUDRATE	115200
+#define BAUDRATE	57600
 
 //#define GENERATE_1MHZ
 
