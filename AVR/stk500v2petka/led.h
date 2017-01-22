@@ -6,8 +6,8 @@
 
 // LED
 #define MY_LED_PORT		B
-#define MY_LED_PIN		2 
-#define MY_LED_ALEV		H 
+#define MY_LED_PIN		1 
+#define MY_LED_ALEV		L 
 
 
 // enable PB1 as output

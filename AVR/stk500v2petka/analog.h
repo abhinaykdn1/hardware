@@ -7,8 +7,7 @@ Autor: Guido Socher
 */
 #ifndef ANALOG_H
 #define ANALOG_H
-//#define RESETADC 0
-#define RESETADC 2
+#define RESETADC 0
 
 // return analog value of a given channel.
 extern unsigned int convertanalog(unsigned char channel);
