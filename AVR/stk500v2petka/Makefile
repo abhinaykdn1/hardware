@@ -41,7 +41,7 @@
 
 
 # MCU name
-MCU = atmega8
+MCU = atmega48
 
 
 # Processor frequency.
@@ -155,7 +155,9 @@ CFLAGS += -fpack-struct
 CFLAGS += -fshort-enums
 CFLAGS += -Wall
 CFLAGS += -Wstrict-prototypes
-CFLAGS += --param inline-call-cost=5
+CFLAGS += -Wno-deprecated-declarations
+CFLAGS += -D__PROG_TYPES_COMPAT__
+#CFLAGS += --param inline-call-cost=5
 #CFLAGS += -mshort-calls
 #CFLAGS += -fno-unit-at-a-time
 #CFLAGS += -Wundef
